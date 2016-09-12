@@ -1,0 +1,50 @@
+{
+  "name": "angular2-universal-windows-app",
+  "version": "0.0.0",
+  "author": "Olivier Combe <olivier.combe@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf node_modules doc dist && npm cache clean",
+    "clean-install": "npm run clean && npm install",
+    "clean-start": "npm run clean && npm start",
+    "watch": "rimraf dist && webpack --watch --progress --profile --display-chunks",
+    "build": "rimraf dist && webpack --progress --profile",
+    "lint": "tsconfig-lint",
+    "start": "npm run watch",
+    "postinstall": "typings install"
+  },
+  "dependencies": {
+    "angular2": "2.0.0-beta.8",
+    "es6-promise": "^3.0.2",
+    "es6-shim": "^0.33.3",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.2",
+    "winjs": "^4.4.0",
+    "zone.js": "0.5.15"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.2",
+    "css-loader": "^0.23.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.4",
+    "html-loader": "^0.4.0",
+    "json-loader": "^0.5.3",
+    "node-sass": "^3.4.2",
+    "null-loader": "git+https://github.com/webpack/null-loader.git",
+    "phantomjs-prebuilt": "^2.1.4",
+    "postcss-loader": "^0.8.0",
+    "protractor": "^3.1.1",
+    "raw-loader": "0.5.1",
+    "rimraf": "^2.5.1",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "ts-loader": "^0.8.1",
+    "tsconfig-lint": "^0.5.0",
+    "tslint": "^3.4.0",
+    "tslint-loader": "^2.1.0",
+    "typescript": "^1.8.0",
+    "typings": "^0.6.8",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.12.13"
+  }
+}

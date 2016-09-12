@@ -1,0 +1,18 @@
+// styles in src/style directory are applied to the whole page
+@import 'style';
+
+body {
+  background: #b3b3b3;
+  color: #fff;
+
+
+}
+
+a {
+  text-decoration: none;
+}
+
+app {
+  text-align: center;
+  margin: 50px;
+}

@@ -1,0 +1,26 @@
+# Logs
+logs
+*.log
+
+# OS generated files #
+.DS_Store
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Node Files #
+/node_modules
+/bower_components
+
+# Typing #
+/typings/
+
+# Dist #
+/dist
+
+# IDE #
+.idea/
+*.swp
+.vs/
+bin/
+bld/

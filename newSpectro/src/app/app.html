@@ -1,0 +1,17 @@
+<header>
+  <nav>
+    <a [routerLink]="['Home']">Play</a>
+    <a [routerLink]="['About']">About</a>
+  </nav>
+</header>
+<main>
+  <h1 class="title">{{api.title}}</h1>
+  <img src="/images/PNG/arrow-left2.png"/>
+  <status></status>
+  <!-- Images (and assets) are parsed and loaded from within the public directory -->
+  
+
+  <router-outlet></router-outlet>
+</main>
+<footer>
+</footer>
