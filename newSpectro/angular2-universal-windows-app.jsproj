@@ -67,6 +67,9 @@
     <Content Include="src\app\components\about\about.html" />
     <Content Include="src\app\components\about\about.scss" />
     <Content Include="src\app\components\about\about.ts" />
+    <Content Include="src\app\components\debugwindow\debugwindow.html" />
+    <Content Include="src\app\components\debugwindow\debugwindow.scss" />
+    <Content Include="src\app\components\debugwindow\debugwindow.ts" />
     <Content Include="src\app\components\home\home.html" />
     <Content Include="src\app\components\home\home.scss" />
     <Content Include="src\app\components\home\home.ts" />
