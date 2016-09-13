@@ -1,4 +1,12 @@
-* {
-  background-color: darkgrey;
-  color: #f87c08;
+div {
+    background-color: darkgrey;
+    height: 100px;
+    margin-left: 50px;
+    margin-right: 25px;
+
+    p {
+        text-align: left;
+        padding: 40px;
+    }
+
 }

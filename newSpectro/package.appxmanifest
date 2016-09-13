@@ -3,8 +3,8 @@
   <Identity Name="600110b0-fe1f-43a5-a6a9-cc93bee46709" Version="1.0.0.0" Publisher="CN=Olivier" />
   <mp:PhoneIdentity PhoneProductId="600110b0-fe1f-43a5-a6a9-cc93bee46709" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>angular2-universal-windows-app</DisplayName>
-    <PublisherDisplayName>Olivier Combe</PublisherDisplayName>
+    <DisplayName>Spectro</DisplayName>
+    <PublisherDisplayName>Seth Bailey</PublisherDisplayName>
     <Logo>images\storelogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="index.html">
-      <uap:VisualElements DisplayName="angular2-universal-windows-app" Description="angular2-universal-windows-app" BackgroundColor="transparent" Square150x150Logo="images\Square150x150Logo.png" Square44x44Logo="images\Square44x44Logo.png">
+      <uap:VisualElements DisplayName="SPECTRO" Description="Windows application to connect to remote spectrometer sensors." BackgroundColor="transparent" Square150x150Logo="images\Square150x150Logo.png" Square44x44Logo="images\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="images\Wide310x150Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="images\splashscreen.png" />
@@ -24,5 +24,11 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
+    <DeviceCapability Name="location" />
+    <DeviceCapability Name="serialcommunication">
+      <Device Id="any">
+        <Function Type="name:serialPort" />
+      </Device>
+    </DeviceCapability>
   </Capabilities>
 </Package>

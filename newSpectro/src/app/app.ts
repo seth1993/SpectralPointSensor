@@ -8,6 +8,7 @@ import {Api} from './services/api/api';
 import {Home} from './components/home/home';
 import {About} from "./components/about/about";
 import {StatusBar} from "./components/status/status";
+import {DebugWindow} from "./components/debugwindow/debugwindow";
 
 /*
  * App Component
@@ -16,7 +17,7 @@ import {StatusBar} from "./components/status/status";
 @Component({
   selector: 'app', // <app></app>
   providers: [...FORM_PROVIDERS, Api],
-  directives: [...ROUTER_DIRECTIVES, StatusBar],
+  directives: [...ROUTER_DIRECTIVES, StatusBar, DebugWindow],
   pipes: [],
   styles: [require('./app.scss')],
   template: require('./app.html')

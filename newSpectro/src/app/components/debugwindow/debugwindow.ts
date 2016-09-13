@@ -1,7 +1,7 @@
 import {Component, OnInit} from 'angular2/core';
 
 @Component({
-  selector: 'about',
+  selector: 'debugwindow',
   template: require('./debugwindow.html'),
   styles: [require('./debugwindow.scss')],
   providers: [],
