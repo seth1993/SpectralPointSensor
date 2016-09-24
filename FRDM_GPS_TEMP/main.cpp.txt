@@ -1,0 +1,70 @@
+#include "mbed.h"
+#include "nmea.h"
+#include "SDFileSystem.h"
+
+
+// Temperatures when to turn on the cooling device, and when to shut off the light source
+#define OVERHEATING_TEMP 33.0
+#define START_COOLING_TEMP 28.0
+
+// TODO make a new file (name=timestamp) each time we start recording data
+#define OUTPUT_FILE "/sd/data.csv"
+
+
+// GPS connection (through arduino)
+Serial duino(PTC4, PTC3);
+
+// USB serial to PC
+Serial pc(USBTX, USBRX);
+
+/**************************************************
+ **          SD FILE SYSTEM                       **
+ **************************************************/
+SDFileSystem sd(PTE3, PTE1, PTE2, PTE4, "sd");
+FILE *fpData;
+
+
+void arduino_read() {
+    //pc.printf("Start GPS Read\n\r");
+    char buffer[BUF_SIZE];
+
+    get_nmea(&duino, buffer, BUF_SIZE);
+
+    struct NMEA_data nmea = parse_line(buffer);
+    // determine whether there's a lock
+    char lock_str[BUF_SIZE];
+    if ( nmea.lock_flag == 'A' )
+        sprintf(lock_str, "A : Has lock");
+    else
+        sprintf(lock_str, "V : No lock");
+
+
+    // assemble data into summary string
+    char status_str[BUF_SIZE];
+    if (nmea.hours != 0 || nmea.minutes != 0 || nmea.seconds != 0) {
+            sprintf(status_str, "%02d:%02d:%02d,%d/%d/%d,%dd %lf' %c %dd %lf' %c,%s, TEMP: %s",
+            nmea.hours, nmea.minutes, nmea.seconds,
+            nmea.month, nmea.day, nmea.year,
+            nmea.latitude, nmea.latitude_minutes, nmea.latitude_direction,
+            nmea.longitude, nmea.longitude_minutes, nmea.longitude_direction, lock_str, nmea.TempC);
+
+    // print to pc, sd card
+    pc.printf("%s\n\r",status_str);
+    }
+/*
+    fpData = fopen(OUTPUT_FILE, "a");
+    fprintf(fpData, "%s", status_str);
+    fclose(fpData);
+*/  
+   // pc.printf("Finish GPS Read\n\r");
+//    XBeeSend((const char *)status_str, strlen(status_str));
+}
+
+int main()
+{    
+    pc.baud(115200); // make sure to set computer TERA Term or whatever to 115200 baud!!!
+    duino.baud(115200);
+    pc.printf("Initializing ...\r\n");
+    
+while (1)    arduino_read();    //reads the data from the arduino, including GPS and TEMP data
+}
