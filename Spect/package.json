@@ -1,0 +1,26 @@
+{
+  "name": "spectro",
+  "version": "1.0.0",
+  "description": "Windows Application to remote sense gas concentration from spectrometer units",
+  "main": "server.js",
+  "scripts": {
+    "build-css": "stylus source/stylesheets/index.styl -o static/css",
+    "watch-css": "stylus source/stylesheets/index.styl -o static/css -w",
+    "clean": "rm -rf static/css && mkdir -p static/css",
+    "build": "npm run clean && npm run build-css",
+    "watch": "npm run clean && npm run watch-css & nodemon server -e js,jade",
+    "start": "node server"
+  },
+  "author": "Seth Bailey",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "express-state": "^1.4.0",
+    "jade": "^1.11.0",
+    "less": "^2.7.1",
+    "morgan": "^1.7.0",
+    "nodemon": "^1.9.2",
+    "serialport": "^4.0.1",
+    "stylus": "^0.54.5"
+  }
+}

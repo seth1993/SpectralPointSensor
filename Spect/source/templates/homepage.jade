@@ -1,0 +1,27 @@
+doctype html
+html
+    head
+        link(href='/style.css', rel='stylesheet')
+        link(href='/css/index.css', rel='stylesheet')
+        script(src="/scripts/homepage.js")
+    body
+        aside
+            h1 SP#[span(class="icon-connection")]CTRO
+            div
+                span(class="icon-play3")
+            div
+                p Connected
+
+            div
+                p RECORDING SETTINGS
+                section
+                    p #[span(class="icon-floppy-disk")] SET SAVE LOCATION
+                    input(type="text")
+                    button BROWSE
+        main
+        footer
+            section
+                p Output
+        script.
+            !{app}
+            console.log(!{app});
