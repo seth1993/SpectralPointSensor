@@ -1,28 +1,18 @@
-var express = require('express')
-  , logger = require('morgan')
-  , app = express()
-  , template = require('jade').compileFile(__dirname + '/source/templates/homepage.jade')
-  , serialport = require('serialport')
-  , serialPorts = require('./serialport.js')
-  , expressWs = require('express-ws')(app);
+var express = require('express');
+var app = require('express')();
+var logger = require('morgan');
+var template = require('jade').compileFile(__dirname + '/source/templates/homepage.jade');
+var serialport = require('serialport');
+var serialPorts = require('./serialport.js');
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-
-
-
-app.use(logger('dev'))
-app.use(express.static(__dirname + '/static'))
-app.use(express.static(__dirname + '/fonts'))
-
-
-app.use(function (req, res, next){
-  console.log('middleware');
-  req.testing = 'testing';
-  return next();
-})
+app.use(logger('dev'));
+app.use(express.static(__dirname + '/static'));
+app.use(express.static(__dirname + '/fonts'));
 
 //This is to retrieve HomePage
 app.get('/', function (req, res, next) {
-  console.log('get route', req.testing);
   try {
     var html = template({ title: 'Home' , dat: "Hello"})
     res.send(html)
@@ -31,22 +21,25 @@ app.get('/', function (req, res, next) {
   }
 })
 
-//Sets up web socket to send serial data to client
-app.ws('/', function(ws,req){
-  ws.on('message', function(msg) {
-    //ws.send(msg);
-    console.log(msg);
+io.on('connection', function (socket){
+  socket.emit('news', { server: 'world'});
+  socket.on('my other event', function(data){
+    console.log(data);
   });
-  console.log("socket", req.testing);
 });
 
+
 //This sets up Server Port
-app.listen(process.env.PORT || 3000, function () {
-  console.log('Listening on http://localhost:' + (process.env.PORT || 3000))
+server.listen(process.env.PORT || 80, function () {
+  console.log('Listening on http://localhost:' + (process.env.PORT || 80))
 })
 
 //Serial Ports are detected/connected/changed
 //var openPorts = serialPorts.connect();
+
+
+
+
 
 
 

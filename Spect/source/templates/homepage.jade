@@ -22,6 +22,10 @@ html
         footer
             section
                 p Output
+        script(src="../../socket.io/socket.io.js")
         script.
-            !{app}
-            console.log(!{app});
+            var socket = io.connect('http://localhost');
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('my other event', { client: 'data' });
+            });

@@ -1,6 +1,6 @@
+"use strict"
 let serialport = require('serialport');
-let readline = serialport.parsers;
-var a = readline.readline();
+
 
 //Serial port
 //
