@@ -1,8 +1,11 @@
-"use strict"
 let serialport = require('serialport');
+let readline = serialport.parsers;
+var a = readline.readline();
 
 //Serial port
 //
+//-------------Windows------------------
+// FTDI & FRDM Board are usually COMX
 //---------------MAC--------------------
 //FTDI
 // /dev/cu.usbserial-DN01ITG0 for Dongle
@@ -22,15 +25,18 @@ module.exports = {
         if(name != 'none' && name != undefined){
             name.close();
             console.log("Closed connection: " + name);
-            return new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize} ,function (err) {
+            var portNew = new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, parser: serialport.parsers.readline('\n')} ,function (err) {
                 if (err) {
                     return console.log('Error: ', err.message);
                 }
-                portOne.write('TURN ON', function(err) {
-                if (err) {
-                    return console.log('Error on write: ', err.message);
-                }
-                console.log('First Packet Sent');
+                portNew.write('TURN ON', function(err) {
+                    if (err) {
+                        return console.log('Error on write: ', err.message);
+                    }
+                    console.log('First Packet Sent(TURN ON)');
+                });
+                portNew.on('data', function (data) {
+                    console.log(data);
                 });
             });
         }
@@ -46,14 +52,14 @@ module.exports = {
             stopBits = 1;
         }
         if(parity === undefined){
-            parity = "none"
+            parity = "none";
         }
         if(bufferSize === undefined){
-            bufferSize = 65536
+            bufferSize = 65536;
         }
 
 
-        let portsOpen = ["one","two"];
+        var portsOpen = ["one","two"];
 
 
         //Finds available USB connections. Specifically FRDM Board & XBee serial ports
@@ -65,7 +71,7 @@ module.exports = {
                 if(port.manufacturer === 'MBED' || port.manufacturer === 'mbed'){//If Freedom Board
                     console.log("Found Freedom Board");
 
-                    let portOne = new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize} ,function (err) {
+                    var portOne = new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, parser: serialport.parsers.readline('\n')} ,function (err) {
                         if (err) {
                             return console.log('Error: ', err.message);
                         }
@@ -76,7 +82,7 @@ module.exports = {
                             console.log('mbed - First Packet Sent');
                         });
                         portOne.on('data', function (data) {
-                            console.log('F ' + data);
+                            console.log(data);
                         });
                     });
                     portsOpen[1] = port.comName;
@@ -84,7 +90,7 @@ module.exports = {
                 } if(port.manfacturer === 'FTDI' || port.manufacturer === 'ftdi'){//If XBee dongle or shield
                     console.log("Found XBee Unit");
 
-                    let portTwo = new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize} ,function (err) {
+                    var portTwo = new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, parser: serialport.parsers.readline('\n')} ,function (err) {
                         if (err) {
                             return console.log('Error: ', err.message);
                         }
@@ -95,7 +101,7 @@ module.exports = {
                             console.log('XBEE - First Packet Sent');
                         });
                         portTwo.on('data', function (data) {
-                            console.log('X ' + data);
+                            console.log(data);
                         });
                     });
                     portsOpen[2] = port.comName;
@@ -110,3 +116,8 @@ module.exports = {
     }
 
 }
+
+
+
+
+
