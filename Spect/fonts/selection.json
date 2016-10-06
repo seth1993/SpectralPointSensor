@@ -20,7 +20,7 @@
       "properties": {
         "ligatures": "connection, wifi",
         "name": "connection",
-        "order": 27,
+        "order": 2,
         "id": 28,
         "prevSize": 32,
         "code": 59675
@@ -78,7 +78,7 @@
       "properties": {
         "ligatures": "feed, wave",
         "name": "feed",
-        "order": 2,
+        "order": 4,
         "id": 30,
         "prevSize": 32,
         "code": 59677
@@ -90,56 +90,56 @@
     {
       "icon": {
         "paths": [
-          "M658.744 749.256l-210.744-210.746v-282.51h128v229.49l173.256 173.254zM512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512 512-229.23 512-512-229.23-512-512-512zM512 896c-212.078 0-384-171.922-384-384s171.922-384 384-384c212.078 0 384 171.922 384 384s-171.922 384-384 384z"
+          "M576 256l-128-128h-448v832h1024v-704h-448zM512 480l224 224h-160v256h-128v-256h-160l224-224z"
         ],
         "tags": [
-          "clock",
-          "time",
-          "schedule"
+          "folder-upload",
+          "directory",
+          "folder-load"
         ],
-        "defaultCode": 59726,
+        "defaultCode": 59700,
         "grid": 16,
         "attrs": []
       },
       "attrs": [],
       "properties": {
-        "ligatures": "clock, time2",
-        "name": "clock",
-        "order": 12,
-        "id": 79,
+        "ligatures": "folder-upload, directory6",
+        "name": "folder-upload",
+        "order": 30,
+        "id": 53,
         "prevSize": 32,
-        "code": 59726
+        "code": 59700
       },
       "setIdx": 0,
       "setId": 1,
-      "iconIdx": 78
+      "iconIdx": 52
     },
     {
       "icon": {
         "paths": [
-          "M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512 512-229.23 512-512-229.23-512-512-512zM658.744 749.256l-210.744-210.746v-282.51h128v229.49l173.256 173.254-90.512 90.512z"
+          "M512 0c-176.732 0-320 143.268-320 320 0 320 320 704 320 704s320-384 320-704c0-176.732-143.27-320-320-320zM512 512c-106.040 0-192-85.96-192-192s85.96-192 192-192 192 85.96 192 192-85.96 192-192 192z"
         ],
         "tags": [
-          "clock",
-          "time",
-          "schedule"
+          "location",
+          "map-marker",
+          "pin"
         ],
-        "defaultCode": 59727,
+        "defaultCode": 59719,
         "grid": 16,
         "attrs": []
       },
       "attrs": [],
       "properties": {
-        "ligatures": "clock2, time3",
-        "name": "clock2",
-        "order": 13,
-        "id": 80,
+        "ligatures": "location, map-marker",
+        "name": "location",
+        "order": 31,
+        "id": 72,
         "prevSize": 32,
-        "code": 59727
+        "code": 59719
       },
       "setIdx": 0,
       "setId": 1,
-      "iconIdx": 79
+      "iconIdx": 71
     },
     {
       "icon": {
@@ -158,7 +158,7 @@
       "properties": {
         "ligatures": "floppy-disk, save2",
         "name": "floppy-disk",
-        "order": 16,
+        "order": 5,
         "id": 99,
         "prevSize": 32,
         "code": 59746
@@ -187,7 +187,7 @@
       "properties": {
         "ligatures": "spinner2, loading3",
         "name": "spinner2",
-        "order": 14,
+        "order": 6,
         "id": 124,
         "prevSize": 32,
         "code": 59771
@@ -195,6 +195,35 @@
       "setIdx": 0,
       "setId": 1,
       "iconIdx": 123
+    },
+    {
+      "icon": {
+        "paths": [
+          "M992.262 871.396l-242.552-206.294c-25.074-22.566-51.89-32.926-73.552-31.926 57.256-67.068 91.842-154.078 91.842-249.176 0-212.078-171.922-384-384-384-212.076 0-384 171.922-384 384s171.922 384 384 384c95.098 0 182.108-34.586 249.176-91.844-1 21.662 9.36 48.478 31.926 73.552l206.294 242.552c35.322 39.246 93.022 42.554 128.22 7.356s31.892-92.898-7.354-128.22zM384 640c-141.384 0-256-114.616-256-256s114.616-256 256-256 256 114.616 256 256-114.614 256-256 256z"
+        ],
+        "tags": [
+          "search",
+          "magnifier",
+          "magnifying-glass",
+          "inspect",
+          "find"
+        ],
+        "defaultCode": 59782,
+        "grid": 16,
+        "attrs": []
+      },
+      "attrs": [],
+      "properties": {
+        "ligatures": "search, magnifier",
+        "name": "search",
+        "order": 29,
+        "id": 135,
+        "prevSize": 32,
+        "code": 59782
+      },
+      "setIdx": 0,
+      "setId": 1,
+      "iconIdx": 134
     },
     {
       "icon": {
@@ -218,7 +247,7 @@
       "properties": {
         "ligatures": "wrench, tool",
         "name": "wrench",
-        "order": 25,
+        "order": 11,
         "id": 146,
         "prevSize": 32,
         "code": 59793
@@ -249,7 +278,7 @@
       "properties": {
         "ligatures": "cog, gear",
         "name": "cog",
-        "order": 17,
+        "order": 7,
         "id": 149,
         "prevSize": 32,
         "code": 59796
@@ -276,7 +305,7 @@
       "properties": {
         "ligatures": "bug, virus",
         "name": "bug",
-        "order": 26,
+        "order": 8,
         "id": 154,
         "prevSize": 32,
         "code": 59801
@@ -288,30 +317,32 @@
     {
       "icon": {
         "paths": [
-          "M1024 448h-100.924c-27.64-178.24-168.836-319.436-347.076-347.076v-100.924h-128v100.924c-178.24 27.64-319.436 168.836-347.076 347.076h-100.924v128h100.924c27.64 178.24 168.836 319.436 347.076 347.076v100.924h128v-100.924c178.24-27.64 319.436-168.836 347.076-347.076h100.924v-128zM792.822 448h-99.762c-19.284-54.55-62.51-97.778-117.060-117.060v-99.762c107.514 24.49 192.332 109.31 216.822 216.822zM512 576c-35.346 0-64-28.654-64-64s28.654-64 64-64c35.346 0 64 28.654 64 64s-28.654 64-64 64zM448 231.178v99.762c-54.55 19.282-97.778 62.51-117.060 117.060h-99.762c24.49-107.512 109.31-192.332 216.822-216.822zM231.178 576h99.762c19.282 54.55 62.51 97.778 117.060 117.060v99.762c-107.512-24.49-192.332-109.308-216.822-216.822zM576 792.822v-99.762c54.55-19.284 97.778-62.51 117.060-117.060h99.762c-24.49 107.514-109.308 192.332-216.822 216.822z"
+          "M192 1024h640l64-704h-768zM640 128v-128h-256v128h-320v192l64-64h768l64 64v-192h-320zM576 128h-128v-64h128v64z"
         ],
         "tags": [
-          "target",
-          "goal",
-          "location",
-          "spot"
+          "bin",
+          "trashcan",
+          "remove",
+          "delete",
+          "recycle",
+          "dispose"
         ],
-        "defaultCode": 59827,
+        "defaultCode": 59821,
         "grid": 16,
         "attrs": []
       },
       "attrs": [],
       "properties": {
-        "ligatures": "target, goal",
-        "name": "target",
-        "order": 28,
-        "id": 180,
+        "ligatures": "bin2, trashcan2",
+        "name": "bin2",
+        "order": 9,
+        "id": 174,
         "prevSize": 32,
-        "code": 59827
+        "code": 59821
       },
       "setIdx": 0,
       "setId": 1,
-      "iconIdx": 179
+      "iconIdx": 173
     },
     {
       "icon": {
@@ -332,7 +363,7 @@
       "properties": {
         "ligatures": "power, lightning",
         "name": "power",
-        "order": 15,
+        "order": 28,
         "id": 182,
         "prevSize": 32,
         "code": 59829
@@ -357,7 +388,7 @@
       "properties": {
         "ligatures": "switch",
         "name": "switch",
-        "order": 4,
+        "order": 10,
         "id": 183,
         "prevSize": 32,
         "code": 59830
@@ -369,31 +400,31 @@
     {
       "icon": {
         "paths": [
-          "M512 96c-111.118 0-215.584 43.272-294.156 121.844s-121.844 183.038-121.844 294.156c0 111.118 43.272 215.584 121.844 294.156s183.038 121.844 294.156 121.844c111.118 0 215.584-43.272 294.156-121.844s121.844-183.038 121.844-294.156c0-111.118-43.272-215.584-121.844-294.156s-183.038-121.844-294.156-121.844zM512 0v0c282.77 0 512 229.23 512 512s-229.23 512-512 512c-282.77 0-512-229.23-512-512s229.23-512 512-512zM448 704h128v128h-128zM448 192h128v384h-128z"
+          "M64 192h896v192h-896zM64 448h896v192h-896zM64 704h896v192h-896z"
         ],
         "tags": [
-          "notification",
-          "warning",
-          "notice",
-          "note",
-          "exclamation"
+          "menu",
+          "list",
+          "options",
+          "lines",
+          "hamburger"
         ],
-        "defaultCode": 59912,
+        "defaultCode": 59837,
         "grid": 16,
         "attrs": []
       },
       "attrs": [],
       "properties": {
-        "ligatures": "notification, warning2",
-        "name": "notification",
-        "order": 18,
-        "id": 265,
+        "ligatures": "menu, list3",
+        "name": "menu",
+        "order": 27,
+        "id": 190,
         "prevSize": 32,
-        "code": 59912
+        "code": 59837
       },
       "setIdx": 0,
       "setId": 1,
-      "iconIdx": 264
+      "iconIdx": 189
     },
     {
       "icon": {
@@ -413,7 +444,7 @@
       "properties": {
         "ligatures": "plus, add",
         "name": "plus",
-        "order": 5,
+        "order": 12,
         "id": 267,
         "prevSize": 32,
         "code": 59914
@@ -421,6 +452,34 @@
       "setIdx": 0,
       "setId": 1,
       "iconIdx": 266
+    },
+    {
+      "icon": {
+        "paths": [
+          "M0 416v192c0 17.672 14.328 32 32 32h960c17.672 0 32-14.328 32-32v-192c0-17.672-14.328-32-32-32h-960c-17.672 0-32 14.328-32 32z"
+        ],
+        "tags": [
+          "minus",
+          "subtract",
+          "minimize",
+          "line"
+        ],
+        "defaultCode": 59915,
+        "grid": 16,
+        "attrs": []
+      },
+      "attrs": [],
+      "properties": {
+        "ligatures": "minus, subtract",
+        "name": "minus",
+        "order": 13,
+        "id": 268,
+        "prevSize": 32,
+        "code": 59915
+      },
+      "setIdx": 0,
+      "setId": 1,
+      "iconIdx": 267
     },
     {
       "icon": {
@@ -442,7 +501,7 @@
       "properties": {
         "ligatures": "checkmark, tick",
         "name": "checkmark",
-        "order": 20,
+        "order": 15,
         "id": 273,
         "prevSize": 32,
         "code": 59920
@@ -471,7 +530,7 @@
       "properties": {
         "ligatures": "checkmark2, tick2",
         "name": "checkmark2",
-        "order": 19,
+        "order": 16,
         "id": 274,
         "prevSize": 32,
         "code": 59921
@@ -497,7 +556,7 @@
       "properties": {
         "ligatures": "play3, player8",
         "name": "play3",
-        "order": 6,
+        "order": 14,
         "id": 285,
         "prevSize": 32,
         "code": 59932
@@ -523,7 +582,7 @@
       "properties": {
         "ligatures": "pause2, player9",
         "name": "pause2",
-        "order": 7,
+        "order": 17,
         "id": 286,
         "prevSize": 32,
         "code": 59933
@@ -550,7 +609,7 @@
       "properties": {
         "ligatures": "stop2, player10",
         "name": "stop2",
-        "order": 8,
+        "order": 18,
         "id": 287,
         "prevSize": 32,
         "code": 59934
@@ -579,7 +638,7 @@
       "properties": {
         "ligatures": "circle-right, right5",
         "name": "circle-right",
-        "order": 10,
+        "order": 20,
         "id": 323,
         "prevSize": 32,
         "code": 59970
@@ -608,7 +667,7 @@
       "properties": {
         "ligatures": "circle-left, left5",
         "name": "circle-left",
-        "order": 11,
+        "order": 21,
         "id": 325,
         "prevSize": 32,
         "code": 59972
@@ -637,7 +696,7 @@
       "properties": {
         "ligatures": "checkbox-checked, checkbox",
         "name": "checkbox-checked",
-        "order": 24,
+        "order": 26,
         "id": 339,
         "prevSize": 32,
         "code": 59986
@@ -665,7 +724,7 @@
       "properties": {
         "ligatures": "checkbox-unchecked, checkbox2",
         "name": "checkbox-unchecked",
-        "order": 23,
+        "order": 25,
         "id": 340,
         "prevSize": 32,
         "code": 59987
@@ -691,7 +750,7 @@
       "properties": {
         "ligatures": "radio-checked, radio-button",
         "name": "radio-checked",
-        "order": 21,
+        "order": 24,
         "id": 341,
         "prevSize": 32,
         "code": 59988
@@ -717,7 +776,7 @@
       "properties": {
         "ligatures": "radio-checked2, radio-button2",
         "name": "radio-checked2",
-        "order": 22,
+        "order": 23,
         "id": 342,
         "prevSize": 32,
         "code": 59989
@@ -744,7 +803,7 @@
       "properties": {
         "ligatures": "radio-unchecked, radio-button3",
         "name": "radio-unchecked",
-        "order": 9,
+        "order": 22,
         "id": 343,
         "prevSize": 32,
         "code": 59990
@@ -766,17 +825,14 @@
     "fontPref": {
       "prefix": "icon-",
       "metadata": {
-        "fontFamily": "icomoon",
-        "majorVersion": 1,
-        "minorVersion": 0
+        "fontFamily": "icomoon"
       },
       "metrics": {
         "emSize": 1024,
         "baseline": 6.25,
         "whitespace": 50
       },
-      "embed": false,
-      "showSelector": true
+      "embed": false
     },
     "imagePref": {
       "prefix": "icon-",
