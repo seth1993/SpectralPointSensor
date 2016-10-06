@@ -3,29 +3,45 @@ html
     head
         link(href='/style.css', rel='stylesheet')
         link(href='/css/index.css', rel='stylesheet')
-        script(src="/scripts/homepage.js")
+        script(src="/scripts/smoothie.js")
     body
         aside
             h1 SP#[span(class="icon-connection")]CTRO
             div
                 span(class="icon-play3")
             div
-                p Connected
+                p #{connection}
 
-            div
-                p RECORDING SETTINGS
-                section
-                    p #[span(class="icon-floppy-disk")] SET SAVE LOCATION
-                    input(type="text")
-                    button BROWSE
+            //- div
+            //-     p RECORDING SETTINGS
+            //-     section
+            //-         p #[span(class="icon-floppy-disk")] SET SAVE LOCATION
+            //-         input(type="text")
+            //-         button BROWSE
         main
+            div#one
+                section
+                    p NAME
+                    span(class="icon-play3")
+                    p STATUS
+                canvas(id="mycanvas" width="300" height="100")
+                section
+                    p TEST NAME:
+                    p testOne10-6-2016
+                p 00:00:00
+                section
+                    h4 SERIAL PORT DETIALS
+                    p 9600
+                    p 8
+                    p 1
+                    p noparity
+
+
+            //-div#two
+            //-div#three
         footer
             section
                 p Output
+                p#console
         script(src="../../socket.io/socket.io.js")
-        script.
-            var socket = io.connect('http://localhost');
-            socket.on('news', function (data) {
-                console.log(data);
-                socket.emit('my other event', { client: 'data' });
-            });
+        script(src="/scripts/homepage.js")  

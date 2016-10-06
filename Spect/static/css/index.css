@@ -4,18 +4,63 @@ body {
   font-family: 'quicksand';
 }
 main {
-  background-color: #d3d3d3;
-  margin-left: 200px;
+  margin-left: 140px;
   display: block;
   height: 100%;
 }
+main p,
+main h4 {
+  text-align: center;
+}
+main div {
+  margin: 20px;
+  display: inline-block;
+  width: 300px;
+  height: 400px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2), inset 0 0 50px rgba(0,0,0,0.1);
+}
+main div section:nth-of-type(1) {
+  max-height: 30px;
+  padding-top: 25px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+main div section:nth-of-type(1) span {
+  font-size: 40px;
+  color: #808080;
+}
+main div section:nth-of-type(1) p {
+  vertical-align: 50%;
+  display: inline;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+main div section:nth-of-type(2) {
+  max-height: 30px;
+  padding-top: 30px;
+  text-align: center;
+}
+main div section:nth-of-type(2) p {
+  display: inline;
+}
+main div section:nth-of-type(3) {
+  text-align: center;
+  border-top: 1px solid #808080;
+}
+main div section:nth-of-type(3) p {
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline;
+}
+#one {
+  visibility: hidden;
+}
 aside {
   z-index: 2;
-  box-shadow: 1.5px 0 5px -2px #888;
   position: fixed;
   left: 0;
   top: 0;
-  width: 200px;
+  width: 140px;
   height: 100%;
   background-color: #369;
   text-align: center;
@@ -68,14 +113,15 @@ aside div:nth-of-type(3) section button {
 }
 footer {
   width: 100%;
-  height: 50%;
+  max-height: 30%;
+  height: 30%;
   border-top: 1px solid #000;
   position: fixed;
   right: 0;
   bottom: 0;
 }
 footer section {
-  margin-left: 210px;
+  margin-left: 150px;
 }
 @font-face {
   font-family: 'quicksand';

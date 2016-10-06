@@ -1,8 +1,10 @@
 "use strict"
 let serialport = require('serialport');
+//let io = require("./socket.js");//Use io.sendData(json) to send to client
+let server = require('./server.js');
+var a = server.socket();
 
-
-//Serial port
+//Serial port (Just for reference)
 //
 //-------------Windows------------------
 // FTDI & FRDM Board are usually COMX
@@ -37,6 +39,7 @@ module.exports = {
                 });
                 portNew.on('data', function (data) {
                     console.log(data);
+                    a.emit('client', 's');
                 });
             });
         }
@@ -83,6 +86,7 @@ module.exports = {
                         });
                         portOne.on('data', function (data) {
                             console.log(data);
+                            a.emit('client', 's');
                         });
                     });
                     portsOpen[1] = port.comName;
@@ -111,11 +115,15 @@ module.exports = {
         });
 
 
+
         return portsOpen;
 
     }
 
 }
+
+
+
 
 
 
