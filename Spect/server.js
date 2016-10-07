@@ -128,10 +128,10 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
                   });
                   portsOpen[1] = port.comName;
 
-              } if(port.manfacturer === 'FTDI' || port.manufacturer === 'ftdi'){//If XBee dongle or shield
+              } if(port.manufacturer === 'FTDI' || port.manufacturer === 'ftdi'){//If XBee dongle or shield
                   console.log("Found XBee Unit");
 
-                  var portTwo = new serialport(port.comName, {baudRate: baudRate, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, parser: serialport.parsers.readline('\n')} ,function (err) {
+                  var portTwo = new serialport(port.comName, {baudRate: 230400, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, parser: serialport.parsers.readline('\n')} ,function (err) {
                       if (err) {
                           return console.log('Error: ', err.message);
                       }

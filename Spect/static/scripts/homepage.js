@@ -2,14 +2,25 @@ console.log("homepage.js added");
 
 var socket = io.connect('http://localhost:3000');
 socket.on('client', function (data) {
-    readIncomingData(data);
+    //readIncomingData(data);
     console.log(data);
     //socket.emit('server', { commandFromClient: 'data' });
+    var co = document.getElementById("console");
+    var json = data;
+    if(json.command && json.message){
+        var addedstring = json.command.toString().toUpperCase() + ":  \t" + json.message + " \n";
+        var para = document.createElement("p");
+        var node = document.createTextNode(addedstring);
+        para.appendChild(node);
+        co.appendChild(para);
+    }
 });
 
 //unit
 //command 
 //message
+
+createBlock(1);
 
 var unitone;//One for now
 var block = document.getElementById("one").style.visibility;
@@ -19,7 +30,7 @@ function readIncomingData(json) {
         //Get Command 
         var console = document.getElementById("console");
         if(json.command && json.message){
-            var addedstring = json.command + ":  " + json.message + " \n";
+            var addedstring = json.command.toString().toUpperCase() + ":  \t" + json.message + " \n";
             var para = document.createElement("p");
             var node = document.createTextNode(addedstring);
             para.appendChild(node);
