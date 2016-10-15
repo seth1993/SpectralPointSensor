@@ -7,6 +7,30 @@ var serialport = require('serialport');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var xbee_api = require('xbee-api');
+var xbeeAPI = new xbee_api.XBeeAPI();
+var frame_obj = {
+    type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
+    id: 0x01, // optional, nextFrameId() is called per default 
+    destination64: "000000000000ffff", // default is broadcast address 
+    destination16: "fffe", // default is "fffe" (unknown/broadcast) 
+    sourceEndpoint: 0x00,
+    destinationEndpoint: 0x00,
+    clusterId: "1554",
+    profileId: "C105",
+    broadcastRadius: 0x00, // optional, 0x00 is default 
+    options: 0x00, // optional, 0x00 is default 
+    data: "Hey Jake! What's up!" // Can either be string or byte array. 
+};
+var message = xbeeAPI.buildFrame(frame_obj);
+
+
+
+
+
+
+
+
 app.use(logger('dev'));
 app.use(express.static(__dirname + '/static'));
 app.use(express.static(__dirname + '/fonts'));
@@ -146,6 +170,10 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
                           decifierData(data);
                       });
                   });
+                  setInterval(function(){
+                      portTwo.write(message);
+                      console.log("Sending");
+                  },2000);
                   portsOpen[2] = port.comName;
               }
 

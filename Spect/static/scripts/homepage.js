@@ -23,7 +23,7 @@ socket.on('client', function (data) {
 var arrayOfRandom = [];
 var arrayOfRandomTwo = [];
 var index = [];
-for(var i = 0; i < 50; i++){
+for(var i = 0; i < 1000; i++){
     index.push(i);
     arrayOfRandom.push(Math.random()* 4);
     arrayOfRandomTwo.push(Math.random()* 4);
@@ -38,15 +38,15 @@ var canvas = document.getElementById('mychart'),
       datasets: [
           {
               fillColor: "rgba(220,220,220,0.2)",
-              strokeColor: "rgba(220,220,220,1)",
-              pointColor: "rgba(220,220,220,1)",
+              strokeColor: "rgba(220,220,220,.1)",
+              pointColor: "rgba(220,220,220,.1)",
               pointStrokeColor: "#fff",
               data: arrayOfRandom
           },
           {
               fillColor: "rgba(151,187,205,0.2)",
-              strokeColor: "rgba(151,187,205,1)",
-              pointColor: "rgba(151,187,205,1)",
+              strokeColor: "rgba(151,187,205,.1)",
+              pointColor: "rgba(151,187,205,.1)",
               pointStrokeColor: "#fff",
               data: arrayOfRandomTwo
           }
@@ -57,13 +57,26 @@ var stuff = {
     data: startingData
 };
 
+var options = {
+        scales: {
+            gridLines: [{
+                display: false
+            }]
+        },
+        elements: {
+            point: {
+                radius: 0
+            }
+        }
+};
+
 // Reduce the animation steps for demo clarity.
 var myLiveChart = new Chart(ctx, stuff);
-
+myLiveChart.options.elements.point.radius = 0;
 
 setInterval(function(){
   // Get a random index point
-  var indexToUpdate = Math.round(Math.random() * 40);
+  var indexToUpdate = Math.round(Math.random() * 1000);
   
   // Update one of the points in the second dataset
   myLiveChart.data.datasets[1].data[indexToUpdate] = Math.random() * 100;
