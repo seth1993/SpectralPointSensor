@@ -16,11 +16,61 @@ socket.on('client', function (data) {
     }
 });
 
-//unit
-//command 
-//message
 
-createBlock(1);
+
+
+
+var arrayOfRandom = [];
+var arrayOfRandomTwo = [];
+var index = [];
+for(var i = 0; i < 50; i++){
+    index.push(i);
+    arrayOfRandom.push(Math.random()* 4);
+    arrayOfRandomTwo.push(Math.random()* 4);
+}
+
+
+var canvas = document.getElementById('mychart'),
+    ctx = canvas.getContext('2d'),
+    startingData = {
+      type: 'line',
+      labels: index,
+      datasets: [
+          {
+              fillColor: "rgba(220,220,220,0.2)",
+              strokeColor: "rgba(220,220,220,1)",
+              pointColor: "rgba(220,220,220,1)",
+              pointStrokeColor: "#fff",
+              data: arrayOfRandom
+          },
+          {
+              fillColor: "rgba(151,187,205,0.2)",
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(151,187,205,1)",
+              pointStrokeColor: "#fff",
+              data: arrayOfRandomTwo
+          }
+      ]
+    };
+var stuff = {
+    type: 'line',
+    data: startingData
+};
+
+// Reduce the animation steps for demo clarity.
+var myLiveChart = new Chart(ctx, stuff);
+
+
+setInterval(function(){
+  // Get a random index point
+  var indexToUpdate = Math.round(Math.random() * 40);
+  
+  // Update one of the points in the second dataset
+  myLiveChart.data.datasets[1].data[indexToUpdate] = Math.random() * 100;
+  
+  myLiveChart.update();
+}, 1000);
+
 
 var unitone;//One for now
 var block = document.getElementById("one").style.visibility;
