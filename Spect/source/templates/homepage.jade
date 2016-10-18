@@ -8,42 +8,37 @@ html
     body
         aside
             h1 SP#[span(class="icon-connection")]CTRO
-            div
+            div#search
                 span(class="icon-search")
-            div
+            div#settings
                 span(class="icon-cog")
-            //- div
-            //-     p RECORDING SETTINGS
-            //-     section
-            //-         p #[span(class="icon-floppy-disk")] SET SAVE LOCATION
-            //-         input(type="text")
-            //-         button BROWSE
         main
             div#one
                 section
                     article
-                        p NAME
-                        span(class="icon-play3")
+                        p ALPHA
+                        span(class="icon-play3")#play
                         p STATUS
+                    article#status
+                        p#connected Connected
+                    article
+                        p TEMP
+                        p#temp 72:70
+                    article
+                        p TEST
+                        p#test 101716test01
+                    article
+                        p ABSORBANCE
+                        p#settings 1 SEC
+                    article
+                        p BATTERY
+                        p 
                 section
                     canvas(id="mychart" width="700" height="200")
-                //-section
-                    p TEST NAME:
-                    p testOne10-6-2016
-                //-p 00:00:00
-                //-section
-                    h4 SERIAL PORT DETIALS
-                    p 230400
-                    p 8
-                    p 1
-                    p noparity
-
-
-            //-div#two
-            //-div#three
         footer
             section
                 h4 OUTPUT
                 p#console
         script(src="../../socket.io/socket.io.js")
-        script(src="/scripts/homepage.js")  
+        script(src="/scripts/homepage.js")
+        script(src="/scripts/events.js")  

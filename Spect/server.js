@@ -67,12 +67,14 @@ function sendData(json) {
 function decifierData(data) {
   var incomingData = new Object();
   data = data.toString();
-  var arrayData = data.split('@', 3);//Splits at @ symbol, limit 3 splits
+  var arrayData = data.split('@', 4);//Splits at @ symbol, limit 3 splits
   if(arrayData[0]){
+      //Do nothing with xbee packet garbage
+  }if(arrayData[1]){
       incomingData.unit = arrayData[0];
-  } if(arrayData[1]){
-      incomingData.command = arrayData[1];
   } if(arrayData[2]){
+      incomingData.command = arrayData[1];
+  } if(arrayData[3]){
       incomingData.message = arrayData[2];
   } if(incomingData){
     sendData(incomingData);
