@@ -12,7 +12,7 @@ main {
 
     h4 {
         margin: 0;
-        margin-top: 15px;
+        padding: 0;
     }
 
     div {
@@ -27,19 +27,17 @@ main {
         section:nth-of-type(1)  {
             display: inline-block;
             width: 200px;
-            text-align: center;
             vertical-align: top;
 
             p {
                 font-size: 12px;
                 display: inline;
             }
-
+            
             span {
-                padding-left: 3px;
-                padding-right: 3px;
-                vertical-align: middle;
+                padding: 4px;
                 color: lightgrey;
+                display: inline-block;
             }
 
         }
@@ -49,23 +47,24 @@ main {
         }
 
         article:nth-of-type(1) {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
+            text-align: center;
+        
             span {
-                font-size: 24px;
+                font-size: 22px;
             }
-        }    
+        }  
+
 
         article:nth-of-type(2) {
             margin-bottom: 10px;
+            text-align: center;
 
         }
 
         article:nth-of-type(3){
             text-align: left;
             margin-bottom: 7px;
+            vertical-align: middle;
 
             p {
                 display: inline-block;
@@ -90,6 +89,7 @@ main {
         article:nth-of-type(4), article:nth-of-type(5), article:nth-of-type(6) {
             font-size: 12px;
             text-align: left;
+
 
             p {
                 text-align: left;
@@ -119,6 +119,7 @@ main {
             resize: none;
             opacity: .7;
             height: 14px;
+            width: 180px;
         }
 
     }
@@ -127,7 +128,6 @@ main {
 
 aside {
     z-index: 2;
-    //box-shadow: 1.5px 0 5px -2px #888;
     position: fixed;
     left: 0;
     top: 0;

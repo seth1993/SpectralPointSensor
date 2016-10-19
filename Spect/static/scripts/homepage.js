@@ -29,24 +29,49 @@ function readIncomingData(data){
 }
 
 function createComponent(name){
-    var htmlObject = '<div id="'+ name +'"><section><h4 id="'+name+'name">'+ name +'</h4><article><span id="'+ name +'play" class="icon-play3"></span><span id="'+name+'stop" class="icon-stop2"></span><span id="'+name+'power" class="icon-switch"></span></article><article><p id="'+name+'time">00:00:00</p></article><article><p>TEMP:</p><span class="icon-circle-left"></span><p id="'+name+'settemp">72</p><span class="icon-circle-right"></span><p id="'+name+'temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'filename">101716_03:44:20_01.csv</textarea></article><article><p>ABSORB:</p><span class="icon-circle-left"></span><p id="'+name+'absorbance">01.00</p><span class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
+    var htmlObject = '<div id="'+ name +'"><section><span id="'+name+'power" class="icon-switch"></span><article><h4 id="'+name+'name">'+ name +'</h4><span id="'+ name +'play" class="icon-play3"></span><span id="'+name+'stop" class="icon-stop2"></span></article><article><p id="'+name+'time">00:00:00</p></article><article><p>TEMP:</p><span class="icon-circle-left"></span><p id="'+name+'settemp">72</p><span class="icon-circle-right"></span><p id="'+name+'temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'filename">101716_03:44:20_01.csv</textarea></article><article><p>ABSORB:</p><span class="icon-circle-left"></span><p id="'+name+'absorbance">01.00</p><span class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
     main.innerHTML += htmlObject;
-    hideObject(name + 'play');
-    hideObject(name + 'stop');
+    //hideObject(name + 'play');
+    hideObject(name + 'stop', 1);
     changeColor(name + 'power', 'red');
     createChart(name + 'mychart');
 }
 
-function hideObject(toHide) {
-    var hide = document.getElementById(toHide);
-    hide.style.width = 0;
-    hide.style.visibility = 'hidden';
-    hide.style.padding = 0;
+function hideObject(toHide, bool) {
+    if(bool){
+        var hide = document.getElementById(toHide);
+        hide.style.width = 0;
+        hide.style.visibility = 'hidden';
+        hide.style.padding = 0;
+    } else {
+        var hide = document.getElementById(toHide);
+        hide.style.width = 30;
+        hide.style.visibility = 'visible';
+        hide.style.padding = 4;
+    }
 }
 
 function changeColor(colorChange, color){
     var element = document.getElementById(colorChange);
     element.style.color = color;
+}
+
+
+//I need to probably save state on 
+function changeState(name, state){
+    if(state === 'OFF'){
+        hideObject(name + 'stop', 1);
+        changeColor(name + 'power', 'red');
+    }if(state === 'ON'){
+        changeColor(name + 'power', 'green');
+        changeColor(name + 'play', 'lightgreen');
+    }if(state === 'RUN'){
+        hideObject(name + 'play', 1);
+        hideObject(name + 'stop', 0);
+        changeColor(name + 'stop', 'black')
+    }if(state === 'ERROR'){
+        //Figure out
+    }
 }
 
 //Chart Random Array and Chart Defaults
