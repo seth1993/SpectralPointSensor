@@ -33,7 +33,8 @@ function createComponent(name){
     main.innerHTML += htmlObject;
     hideObject(name + 'play');
     hideObject(name + 'stop');
-    //createChart(name + 'chart');
+    changeColor(name + 'power', 'red');
+    createChart(name + 'mychart');
 }
 
 function hideObject(toHide) {
@@ -43,6 +44,10 @@ function hideObject(toHide) {
     hide.style.padding = 0;
 }
 
+function changeColor(colorChange, color){
+    var element = document.getElementById(colorChange);
+    element.style.color = color;
+}
 
 //Chart Random Array and Chart Defaults
 var arrayOfRandom = [];
