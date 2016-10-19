@@ -1,7 +1,7 @@
 
 var search = document.getElementById('search');
 var settings = document.getElementById('settings');
-var play = document.getElementById('play');
+//var play = document.getElementById('play');
 
 search.addEventListener('click', function(){
     console.log("Finding Devices");
@@ -14,7 +14,7 @@ settings.addEventListener('click', function(){
 
 });
 
-play.addEventListener('click', function(){
+// play.addEventListener('click', function(){
 
-});
+// });
 

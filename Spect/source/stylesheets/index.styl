@@ -4,14 +4,14 @@ body{
     font-family: 'quicksand';
 }
 
-
 main {
     margin-left: 140px;
     margin-top: 20px;
     width: 100%;
 
-    p, h4 {
-        text-align: center;
+    h4 {
+        margin: 0;
+        margin-top: 15px;
     }
 
     div {
@@ -30,12 +30,13 @@ main {
             vertical-align: top;
 
             p {
+                font-size: 12px;
                 display: inline;
-                padding: 5px;
             }
 
             span {
-                font-size: 30px;
+                padding-left: 3px;
+                padding-right: 3px;
                 vertical-align: middle;
                 color: lightgrey;
             }
@@ -50,20 +51,44 @@ main {
             display: flex;
             align-items: center;
             justify-content: center;
+
+            span {
+                font-size: 24px;
+            }
         }    
 
         article:nth-of-type(2) {
-            display: inline-block;
-            background-color: lightgrey;
-            width: 150px;
             margin-bottom: 10px;
 
         }
 
-        article:nth-of-type(3), article:nth-of-type(4), article:nth-of-type(5), article:nth-of-type(6) {
+        article:nth-of-type(3){
+            text-align: left;
+            margin-bottom: 7px;
+
+            p {
+                display: inline-block;
+                padding: 0;
+                margin: 0;
+            }
+
+            span:nth-of-type(1){
+                padding-left: 5px;
+            }
+
+            p:nth-of-type(1) {
+                min-width: 70px;
+                padding-left: 20px;
+            }
+
+            span:hover {
+                color: #336699;
+            }
+        }
+
+        article:nth-of-type(4), article:nth-of-type(5), article:nth-of-type(6) {
             font-size: 12px;
             text-align: left;
-            margin-bottom: 5px;
 
             p {
                 text-align: left;
@@ -73,9 +98,26 @@ main {
             }
 
             p:nth-of-type(1) {
-                min-width: 90px;
-                padding-left: 30px;
+                min-width: 70px;
+                padding-left: 20px;
             }
+
+            span {
+                font-size: 16px;
+            }
+
+            span:hover {
+                color: #336699;
+            }
+        }
+
+        textarea {
+            margin-left: 20px;
+            margin-bottom: 7px;
+            padding-top: 2px;
+            resize: none;
+            opacity: .7;
+            height: 14px;
         }
 
     }
