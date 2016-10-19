@@ -6,23 +6,24 @@ var serialport = require('serialport');
 //var serialPorts = require('./serialport.js');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var portsOpen = ["one","two"];
 
-var xbee_api = require('xbee-api');
-var xbeeAPI = new xbee_api.XBeeAPI();
-var frame_obj = {
-    type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
-    id: 0x01, // optional, nextFrameId() is called per default 
-    destination64: "000000000000ffff", // default is broadcast address 
-    destination16: "fffe", // default is "fffe" (unknown/broadcast) 
-    sourceEndpoint: 0x00,
-    destinationEndpoint: 0x00,
-    clusterId: "1554",
-    profileId: "C105",
-    broadcastRadius: 0x00, // optional, 0x00 is default 
-    options: 0x00, // optional, 0x00 is default 
-    data: "Hey Jake! What's up!" // Can either be string or byte array. 
-};
-var message = xbeeAPI.buildFrame(frame_obj);
+// var xbee_api = require('xbee-api');
+// var xbeeAPI = new xbee_api.XBeeAPI();
+// var frame_obj = {
+//     type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
+//     id: 0x01, // optional, nextFrameId() is called per default 
+//     destination64: "000000000000ffff", // default is broadcast address 
+//     destination16: "fffe", // default is "fffe" (unknown/broadcast) 
+//     sourceEndpoint: 0x00,
+//     destinationEndpoint: 0x00,
+//     clusterId: "1554",
+//     profileId: "C105",
+//     broadcastRadius: 0x00, // optional, 0x00 is default 
+//     options: 0x00, // optional, 0x00 is default 
+//     data: "Hey Jake! What's up!" // Can either be string or byte array. 
+// };
+// var message = xbeeAPI.buildFrame(frame_obj);
 
 
 
@@ -52,6 +53,24 @@ var openPorts = connect();
 server.listen(3000, function () {
   console.log('Listening on http://localhost:' + (3000))
 });
+
+
+//Recieve Data from Client Side
+io.on('connection', function (socket){
+    socket.on('server', function(data){//Recieving data from user
+        console.log(data);
+        interpretData(data);
+    });
+});
+
+function interpretData(data){
+    if(data === 'finddevices'){
+        console.log("We're working to find devices");
+        console.log(JSON.stringify(portsOpen));
+        //Need to have code here to actually find how many devices
+        io.sockets.emit('client', {devices: 1});
+    }
+}
 
 
 function sendData(json) {
@@ -124,8 +143,6 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
           bufferSize = 65536;
       }
 
-
-      var portsOpen = ["one","two"];
 
 
       //Finds available USB connections. Specifically FRDM Board & XBee serial ports

@@ -16,11 +16,9 @@ socket.on('client', function (data) {
 
 
 
-
-
-
-
-
+function sendDataToServer(dataToSend) {
+    socket.emit('server', dataToSend);
+}
 
 
 

@@ -5,18 +5,17 @@ body {
 }
 main {
   margin-left: 140px;
-  position: absolute;
-  top: 0;
-  left: 0;
+  margin-top: 20px;
   width: 100%;
-  height: 400px;
 }
 main p,
 main h4 {
   text-align: center;
 }
 main div {
-  margin: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
   display: inline-block;
   width: 900px;
   height: 200px;
@@ -106,8 +105,13 @@ aside div:nth-of-type(2) {
   border-top: 1px solid #808080;
 }
 footer {
-  margin-top: 460px;
   border-top: 1px solid #000;
+  overflow-y: scroll;
+  position: fixed;
+  bottom: 0;
+  height: 200px;
+  width: 100%;
+  background-color: #fff;
 }
 footer section {
   margin-left: 150px;
