@@ -18,3 +18,6 @@ settings.addEventListener('click', function(){
 
 // });
 
+function reply_click(id){
+    console.log(id);
+}
