@@ -34,10 +34,14 @@ main {
                 display: inline;
             }
             
-            span {
+            h4 {
+                text-align: center;
+            }
+            
+            a {
+                vertical-align: middle;
                 padding: 4px;
-                color: lightgrey;
-                display: inline-block;
+                display: block;
             }
 
         }
@@ -48,8 +52,9 @@ main {
 
         article:nth-of-type(1) {
             text-align: center;
-        
+
             span {
+                display: block;
                 font-size: 22px;
             }
         }  
@@ -70,6 +75,11 @@ main {
                 display: inline-block;
                 padding: 0;
                 margin: 0;
+            }
+
+            span {
+                color: lightgrey;
+                padding: 4px;
             }
 
             span:nth-of-type(1){
@@ -105,6 +115,8 @@ main {
 
             span {
                 font-size: 16px;
+                color: lightgrey;
+                padding: 4px;
             }
 
             span:hover {
@@ -192,4 +204,40 @@ footer {
 @font-face {
   font-family: 'quicksand';
   src:  url('../quicksand/Quicksand-Light.otf');
+}
+
+.red {
+    color: #ff8080;
+}
+
+.red:hover {
+    color: red;
+}
+
+.green {
+    color: lightgreen;
+}
+
+.green:hover {
+    color: green;
+}
+
+.lightgrey {
+    color: lightgrey;
+}
+
+.on {
+    color: lightgreen;
+}
+
+.on:hover {
+    color: red;
+}
+
+.off { 
+    color: red;
+}
+
+.off:hover {
+    color: green;
 }

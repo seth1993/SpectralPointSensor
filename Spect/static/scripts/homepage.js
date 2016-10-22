@@ -1,6 +1,7 @@
 var socket = io.connect('http://localhost:3000');
 var co = document.getElementById("console");
 var main = document.getElementById('main');
+var graphs = [];
 
 
 socket.on('client', function (data) {
@@ -16,59 +17,73 @@ function sendDataToServer(dataToSend) {
 function readIncomingData(data){
     if(data.devices){
         for(var i = 0; i < data.devices.length; i++){
-            createComponent(data.devices[i]);
+            graphs[i] = data.devices[i];
             console.log('Create');
         }
+        createComponent(graphs);
     } if(data.command && data.message){
         var addedstring = data.command.toString().toUpperCase() + ":  \t" + data.message + " \n";
         var para = document.createElement("p");
         var node = document.createTextNode(addedstring);
         para.appendChild(node);
         co.appendChild(para);
+    } if(data.command === 'data'){
+        changeData(data.message);
     }
 }
 
-function createComponent(name){
-    var htmlObject = '<div id="'+ name +'"><section><span id="'+name+'power" onClick="reply_click(this.id)" class="icon-switch"></span><article><h4 id="'+name+'name" onClick="reply_click(this.id)">'+ name +'</h4><span id="'+ name +'play" onClick="reply_click(this.id)" class="icon-play3"></span><span id="'+name+'stop" onClick="reply_click(this.id)" class="icon-stop2"></span></article><article><p id="'+name+'time">00:00:00</p></article><article><p>TEMP:</p><span id="'+name+'templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'settemp">72</p><span id="'+name+'tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p id="'+name+'temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'filename">101716_03:44:20_01.csv</textarea></article><article><p>ABSORB:</p><span id="'+name+'absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'absorbance">01.00</p><span id="'+name+'absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
-    main.innerHTML += htmlObject;
-    //hideObject(name + 'play');
-    hideObject(name + 'stop', 1);
-    changeColor(name + 'power', 'red');
-    createChart(name + 'mychart');
+
+function createComponent(graphs){
+    for(var i = 0; i < graphs.length; i++){
+        var name = graphs[i];
+        var htmlObject = '<div id="'+ name +'"><section><a id="'+name+'1power"><span id="'+name+'power" onClick="reply_click(this.id)" class="icon-switch"></span></a><h4 id="'+name+'name" >'+ name +'</h4><article><a id="'+ name +'1play" ><span id="'+name+'play" onClick="reply_click(this.id)" class="icon-play3"></span></a><a id="'+name+'1stop" ><span id="'+name+'stop" onClick="reply_click(this.id)" class="icon-stop2"></span></a></article><article><p id="'+name+'time">00:00:00</p></article><article><p>TEMP:</p><span id="'+name+'templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'settemp">72</p><span id="'+name+'tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p id="'+name+'temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'filename">101716_03:44:20_01.csv</textarea></article><article><p>ABSORB:</p><span id="'+name+'absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'absorbance">01.00</p><span id="'+name+'absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
+        main.innerHTML += htmlObject;
+        hideObject(name + '1stop', 1);
+    }
 }
 
 function hideObject(toHide, bool) {
     if(bool){
         var hide = document.getElementById(toHide);
-        hide.style.width = 0;
+        hide.style.height = 0;
         hide.style.visibility = 'hidden';
         hide.style.padding = 0;
     } else {
         var hide = document.getElementById(toHide);
-        hide.style.width = 30;
+        hide.style.height = '30px';
         hide.style.visibility = 'visible';
-        hide.style.padding = 4;
+        hide.style.padding = '4px';
     }
 }
 
-function changeColor(colorChange, color){
-    var element = document.getElementById(colorChange);
-    element.style.color = color;
-}
+function changeColor(name, type, color){
+    if(type === 'play'){
+        document.getElementById(name+'1'+type).className = color;
+    } if(type === 'stop'){
+        document.getElementById(name+'1'+type).className = color;
+    } if(type === 'power'){
+        document.getElementById(name+'1'+type).className = color;
+    }
+};
 
 
 //I need to probably save state on 
 function changeState(name, state){
     if(state === 'OFF'){
-        hideObject(name + 'stop', 1);
-        changeColor(name + 'power', 'red');
+        hideObject(name + '1stop', 1);
+        hideObject(name + '1play', 0);
+        changeColor(name, 'power', 'off');
+        changeColor(name, 'play', 'lightgrey');
     }if(state === 'ON'){
-        changeColor(name + 'power', 'green');
-        changeColor(name + 'play', 'lightgreen');
+        hideObject(name + '1stop', 1);
+        hideObject(name + '1play', 0);
+        changeColor(name, 'power', 'on');
+        changeColor(name, 'play', 'green');
     }if(state === 'RUN'){
-        hideObject(name + 'play', 1);
-        hideObject(name + 'stop', 0);
-        changeColor(name + 'stop', 'black')
+        hideObject(name + '1play', 1);
+        hideObject(name + '1stop', 0);
+        changeColor(name, 'power', 'lightgrey');
+        changeColor(name, 'stop', 'red');
     }if(state === 'ERROR'){
         //Figure out
     }
@@ -124,20 +139,24 @@ var stuff = {
     options: options
 };
 
-function createChart(idOfChart){
-    var canvas = document.getElementById(idOfChart);
-    var ctx = canvas.getContext('2d');
-    var myLiveChart = new Chart(ctx, stuff);
-    setInterval(function(){
-        var indexToUpdate = Math.round(Math.random() * 2048);
-        myLiveChart.data.datasets[0].data[indexToUpdate] = Math.random() * 10; 
-        myLiveChart.update();
-    }, 1000);
+
+
+var myLiveChart;
+
+function createChart(graphs){
+    for(var i = 0; i < graphs.length; i++){
+        var canvas = document.getElementById(graphs[i]+ 'mychart');
+        var ctx = canvas.getContext('2d');
+        myLiveChart = new Chart(ctx, stuff);
+    }
 }
 
 
-
-
-
+function changeData(data){
+    //var indexToUpdate = Math.round(Math.random() * 2048);
+    //myLiveChart.data.datasets[0].data[indexToUpdate] = Math.random() * 10; 
+    myLiveChart.data.datasets[0].data = data;
+    myLiveChart.update();
+};
 
 

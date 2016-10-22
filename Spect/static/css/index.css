@@ -31,10 +31,13 @@ main div section:nth-of-type(1) p {
   font-size: 12px;
   display: inline;
 }
-main div section:nth-of-type(1) span {
+main div section:nth-of-type(1) h4 {
+  text-align: center;
+}
+main div section:nth-of-type(1) a {
+  vertical-align: middle;
   padding: 4px;
-  color: #d3d3d3;
-  display: inline-block;
+  display: block;
 }
 main div section:nth-of-type(2) {
   display: inline-block;
@@ -43,6 +46,7 @@ main div article:nth-of-type(1) {
   text-align: center;
 }
 main div article:nth-of-type(1) span {
+  display: block;
   font-size: 22px;
 }
 main div article:nth-of-type(2) {
@@ -58,6 +62,10 @@ main div article:nth-of-type(3) p {
   display: inline-block;
   padding: 0;
   margin: 0;
+}
+main div article:nth-of-type(3) span {
+  color: #d3d3d3;
+  padding: 4px;
 }
 main div article:nth-of-type(3) span:nth-of-type(1) {
   padding-left: 5px;
@@ -93,6 +101,8 @@ main div article:nth-of-type(4) span,
 main div article:nth-of-type(5) span,
 main div article:nth-of-type(6) span {
   font-size: 16px;
+  color: #d3d3d3;
+  padding: 4px;
 }
 main div article:nth-of-type(4) span:hover,
 main div article:nth-of-type(5) span:hover,
@@ -162,4 +172,31 @@ footer p {
 @font-face {
   font-family: 'quicksand';
   src: url("../quicksand/Quicksand-Light.otf");
+}
+.red {
+  color: #ff8080;
+}
+.red:hover {
+  color: #f00;
+}
+.green {
+  color: #90ee90;
+}
+.green:hover {
+  color: #008000;
+}
+.lightgrey {
+  color: #d3d3d3;
+}
+.on {
+  color: #90ee90;
+}
+.on:hover {
+  color: #f00;
+}
+.off {
+  color: #f00;
+}
+.off:hover {
+  color: #008000;
 }

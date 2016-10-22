@@ -68,20 +68,45 @@ function interpretData(data){
         console.log("We're working to find devices");
         console.log(JSON.stringify(portsOpen));
         //Need to have code here to actually find how many devices
-        io.sockets.emit('client', {devices: ['ALPHA', 'BRAVO', 'CHARLIE']});
+        io.sockets.emit('client', {devices: ['ALPHA']});
     }
 }
 
 
 function sendData(json) {
+  io.sockets.emit('client', json);
   io.on('connection', function (socket){
-    socket.emit('client', json);//Send data to user
+    //socket.emit('client', json);//Send data to user
     socket.on('server', function(data){//Recieving data from user
       console.log(data);
     });
   });
 }
 
+// var startingpoint = 72;
+// setInterval(function(){
+//     startingpoint++;
+//     if(startingpoint > 80){
+//         startingpoint = startingpoint - 15;
+//     }
+//     var data = new Object();
+//     data.unit = 'ALPHA';
+//     data.command = 'temp';
+//     data.message = startingpoint;
+//     io.sockets.emit('client',data);
+// },5000);
+
+// setInterval(function(){
+//     var arrayOfRandom = [];
+//     var data = new Object();
+//     data.unit = 'ALPHA';
+//     data.command = 'data';
+//     for(var i = 0; i < 2048; i++){
+//         arrayOfRandom.push(Math.random() + 4);
+//     }
+//     data.message = arrayOfRandom;
+//     io.sockets.emit('client', data);
+// },1000);
 
 function decifierData(data) {
   var incomingData = new Object();

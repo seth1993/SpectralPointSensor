@@ -8,10 +8,13 @@ search.addEventListener('click', function(){
     //Send Request to Server
     //socket.emit('server', 'currentunits');
     sendDataToServer('finddevices');
+
 });
 
 settings.addEventListener('click', function(){
-
+    changeState('ALPHA', 'ON');
+    //changeState('BRAVO', 'RUN');
+    createChart(['ALPHA']);
 });
 
 // play.addEventListener('click', function(){
