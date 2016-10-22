@@ -68,7 +68,7 @@ function interpretData(data){
         console.log("We're working to find devices");
         console.log(JSON.stringify(portsOpen));
         //Need to have code here to actually find how many devices
-        io.sockets.emit('client', {devices: ['ALPHA']});
+        io.sockets.emit('client', {devices: ['ALPHA', 'BRAVO']});
     }
 }
 
@@ -214,10 +214,10 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
                           decifierData(data);
                       });
                   });
-                  setInterval(function(){
-                      portTwo.write(message);
-                      console.log("Sending");
-                  },2000);
+                //   setInterval(function(){
+                //       portTwo.write(message);
+                //       console.log("Sending");
+                //   },2000);
                   portsOpen[2] = port.comName;
               }
 

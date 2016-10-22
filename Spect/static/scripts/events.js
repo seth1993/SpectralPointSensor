@@ -13,7 +13,7 @@ search.addEventListener('click', function(){
 
 settings.addEventListener('click', function(){
     changeState('ALPHA', 'ON');
-    //changeState('BRAVO', 'RUN');
+    changeState('BRAVO', 'RUN');
     createChart(['ALPHA']);
 });
 
