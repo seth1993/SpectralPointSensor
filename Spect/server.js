@@ -68,7 +68,22 @@ function interpretData(data){
         console.log("We're working to find devices");
         console.log(JSON.stringify(portsOpen));
         //Need to have code here to actually find how many devices
-        io.sockets.emit('client', {devices: ['ALPHA', 'BRAVO']});
+        var numberOfDevices = 2;//For testing
+        var deviceList;
+        for(var i = 0; i < numberOfDevices; i++){
+            if(i == 0){
+                var o = new Object();
+                o.name = 'alpha';
+                o.status = 'OFF';
+                deviceList.push(o);
+            } else if(i == 1){
+                var o = new Object();
+                o.name = 'bravo';
+                o.status = 'OFF';
+                deviceList.push(o);
+            }
+        }
+        io.sockets.emit('client', {devices: deviceList/*['ALPHA', 'BRAVO']*/});
     }
 }
 
