@@ -14,6 +14,8 @@ function sendDataToServer(dataToSend) {
     socket.emit('server', dataToSend);
 }
 
+
+//Important: Seperates Incoming Server Data into different concerns
 function readIncomingData(data){
     if(data.devices){
         for(var i = 0; i < data.devices.length; i++){
@@ -36,7 +38,7 @@ function readIncomingData(data){
 function createComponent(graphs){
     for(var i = 0; i < graphs.length; i++){
         var name = graphs[i];
-        var htmlObject = '<div id="'+ name +'"><section><a id="'+name+'1power"><span id="'+name+'power" onClick="reply_click(this.id)" class="icon-switch"></span></a><h4 id="'+name+'name" >'+ name +'</h4><article><a id="'+ name +'1play" ><span id="'+name+'play" onClick="reply_click(this.id)" class="icon-play3"></span></a><a id="'+name+'1stop" ><span id="'+name+'stop" onClick="reply_click(this.id)" class="icon-stop2"></span></a></article><article><p id="'+name+'time">00:00:00</p></article><article><p>TEMP:</p><span id="'+name+'templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'settemp">72</p><span id="'+name+'tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p id="'+name+'temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'filename">101716_03:44:20_01.csv</textarea></article><article><p>ABSORB:</p><span id="'+name+'absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'absorbance">01.00</p><span id="'+name+'absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
+        var htmlObject = '<div id="'+ name +'"><section><a id="'+name+'1power"><span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span></a><h4 id="'+name+'@name" >'+ name +'</h4><article><a id="'+ name +'1play" ><span id="'+name+'@play" onClick="reply_click(this.id)" class="icon-play3"></span></a><a id="'+name+'1stop" ><span id="'+name+'@stop" onClick="reply_click(this.id)" class="icon-stop2"></span></a></article><article><p id="'+name+'@time">00:00:00</p></article><article><p>TEMP:</p><span id="'+name+'@templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'@settemp">72</p><span id="'+name+'@tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p id="'+name+'@temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea></article><article><p>ABSORB:</p><span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'@absorbance">01.00</p><span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
         main.innerHTML += htmlObject;
         hideObject(name + '1stop', 1);
     }
