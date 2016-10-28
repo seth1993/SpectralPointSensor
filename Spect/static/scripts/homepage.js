@@ -16,20 +16,25 @@ function sendDataToServer(dataToSend) {
 }
 
 
+
 //Important: Seperates Incoming Server Data into different concerns
 function readIncomingData(data){
     if(data.devices){
         createComponent(data.devices);
     } if(data.command && data.message){
-        var addedstring = data.command.toString().toUpperCase() + ":  \t" + data.message + " \n";
+        var datapart = "";
+        if(data.data){
+            datapart = ": " + data.data;
+        }
+        var addedstring = data.command.toString().toUpperCase() + ":  \t" + data.message + datapart +" \n";
         var para = document.createElement("p");
         var node = document.createTextNode(addedstring);
         para.appendChild(node);
         co.appendChild(para);
     } if(data.command === 'data'){
-        changeData(data.message);
+        changeData(data.unit, data.data);
     } if(data.state){
-        changeState(data.name, data.state);
+        changeState(data.name.toUpperCase(), data.state);
     }
 }
 
@@ -142,24 +147,23 @@ var stuff = {
     options: options
 };
 
+var myLiveCharts = new Object();
 
-
-var myLiveChart;
-
-function createChart(graphs){
-    for(var i = 0; i < graphs.length; i++){
-        var canvas = document.getElementById(graphs[i]+ 'mychart');
-        var ctx = canvas.getContext('2d');
-        myLiveChart = new Chart(ctx, stuff);
-    }
+function createChart(name){
+    var canvas = document.getElementById(name+ 'mychart');
+    var ctx = canvas.getContext('2d');
+    myLiveCharts[name] = new Chart(ctx, stuff);
 }
 
-
-function changeData(data){
-    //var indexToUpdate = Math.round(Math.random() * 2048);
-    //myLiveChart.data.datasets[0].data[indexToUpdate] = Math.random() * 10; 
-    myLiveChart.data.datasets[0].data = data;
-    myLiveChart.update();
+function changeData(name,data){
+    name = name.toUpperCase();
+    if(!myLiveCharts[name]){
+        createChart(name);
+    }
+    if(data){
+        myLiveCharts[name].data.datasets[0].data = data;
+        myLiveCharts[name].update();
+    }
 };
 
 
