@@ -6,7 +6,11 @@
 */
 var search = document.getElementById('search');
 var settings = document.getElementById('settings');
+var states = new Object();
 
+function setDeviceSettings(name, state){
+    states[name] = state;
+}
 
 search.addEventListener('click', function(){
     console.log("Finding Devices");
@@ -49,11 +53,19 @@ function reply_click(id){
         if(currentvalue < 1000){
             document.getElementById(unit + '@absorbance').innerText = (currentvalue + .1).toFixed(2);
         }
-    } else if(clickFunction[1] === 'play'){
-
-    } else if(clickFunction[1] === 'stop'){
-
-    } else if(clickFunction[1] === 'power' && state != 'running'){
-
+    } else if(clickFunction[1] === 'play' && states[unit] === 'ON'){
+            var state = {state: 'RUN', name: unit};
+            sendDataToServer(state);
+    } else if(clickFunction[1] === 'stop' && states[unit] === 'RUN'){
+            var state = {state: 'ON', name: unit};
+            sendDataToServer(state);
+    } else if(clickFunction[1] === 'power'){
+        if(states[unit] === 'OFF'){
+            var state = {state: 'ON', name: unit};
+            sendDataToServer(state);
+        } else if(states[unit] === 'ON'){
+            var state = {state: 'OFF', name: unit};
+            sendDataToServer(state);
+        }
     }
 }
