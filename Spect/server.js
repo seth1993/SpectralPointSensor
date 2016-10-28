@@ -8,24 +8,26 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var portsOpen = ["one","two"];
 
-// var xbee_api = require('xbee-api');
-// var xbeeAPI = new xbee_api.XBeeAPI();
-// var frame_obj = {
-//     type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
-//     id: 0x01, // optional, nextFrameId() is called per default 
-//     destination64: "000000000000ffff", // default is broadcast address 
-//     destination16: "fffe", // default is "fffe" (unknown/broadcast) 
-//     sourceEndpoint: 0x00,
-//     destinationEndpoint: 0x00,
-//     clusterId: "1554",
-//     profileId: "C105",
-//     broadcastRadius: 0x00, // optional, 0x00 is default 
-//     options: 0x00, // optional, 0x00 is default 
-//     data: "Hey Jake! What's up!" // Can either be string or byte array. 
-// };
-// var message = xbeeAPI.buildFrame(frame_obj);
+var xbee_api = require('xbee-api');
+var xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2});
+var frame_obj = {
+    type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
+    id: 0x01, // optional, nextFrameId() is called per default 
+    destination64: "000000000000ffff", // default is broadcast address 
+    destination16: "fffe", // default is "fffe" (unknown/broadcast) 
+    sourceEndpoint: 0x00,
+    destinationEndpoint: 0x00,
+    clusterId: "1554",
+    profileId: "C105",
+    broadcastRadius: 0x00, // optional, 0x00 is default 
+    options: 0x00, // optional, 0x00 is default 
+    data: "Hey Jake! What's up!" // Can either be string or byte array. 
+};
+var message = xbeeAPI.buildFrame(frame_obj);
 
-
+xbeeAPI.on("frame_object", function(frame, k) {
+    console.log(frame.data + '');
+});
 
 
 
@@ -85,11 +87,18 @@ function interpretData(data){
         }
         io.sockets.emit('client', {devices: deviceList/*['ALPHA', 'BRAVO']*/});
     } else if (data.state){
-        console.log("Changed State");
-        var statechange = new Object();
-        statechange.state = 'ON';
-        statechange.name = data.name;
-        io.sockets.emit('client', statechange);
+        var statechange;
+        if(data.state === 'ON'){
+            statechange = {state: 'ON', name: data.name}
+        } else if(data.state === 'OFF'){
+            statechange = {state: 'OFF', name: data.name}
+        } else if(data.state === 'RUN'){
+            statechange = {state: 'RUN', name: data.name}
+        } else if(data.state === 'ERROR'){
+            statechange = {state: 'ERROR', name: data.name}
+        } if(statechange){
+            io.sockets.emit('client', statechange);
+        }
     }
 }
 
@@ -220,7 +229,7 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
               } if(port.manufacturer === 'FTDI' || port.manufacturer === 'ftdi'){//If XBee dongle or shield
                   console.log("Found XBee Unit");
 
-                  var portTwo = new serialport(port.comName, {baudRate: 230400, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, parser: serialport.parsers.readline('\n')} ,function (err) {
+                  var portTwo = new serialport(port.comName, {baudRate: 230400, dataBits: dataBits, stopBits: stopBits, parity: parity, bufferSize: bufferSize, /*parser: serialport.parsers.readline('\n')*/parser: xbeeAPI.rawParser()} ,function (err) {
                       if (err) {
                           return console.log('Error: ', err.message);
                       }

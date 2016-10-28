@@ -69,3 +69,14 @@ function reply_click(id){
         }
     }
 }
+
+function startTestTimer(name){
+    testTicker = document.getElementById(name + '@time');
+    if(states[name] === 'RUN'){
+        setTimeout
+    }
+}
+
+function count(name){
+    
+}
