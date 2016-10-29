@@ -283,22 +283,22 @@ function sendPacket(dataToSend){
 // }
 
 var n = 0;
-setInterval(function(){
-    if(n == 0){
-        sendDataToClient('bravo@data@1@'+ createFakeData(0,100));
-    } else if(n == 1){
-        sendDataToClient('bravo@data@2@'+ createFakeData(100,200));
-    } else if(n == 2){
-        sendDataToClient('bravo@data@1@'+ createFakeData(200,300));
-        n = 0;
-    }// else if(n == 3){
-    //     sendDataToClient('alpha@data@1@'+ createFakeData(800,1000));
-    // } else if(n == 4){
-    //     n = 0;
-    // }
+// setInterval(function(){
+//     if(n == 0){
+//         sendDataToClient('bravo@data@1@'+ createFakeData(0,100));
+//     } else if(n == 1){
+//         sendDataToClient('bravo@data@2@'+ createFakeData(100,200));
+//     } else if(n == 2){
+//         sendDataToClient('bravo@data@1@'+ createFakeData(200,300));
+//         n = 0;
+//     }// else if(n == 3){
+//     //     sendDataToClient('alpha@data@1@'+ createFakeData(800,1000));
+//     // } else if(n == 4){
+//     //     n = 0;
+//     // }
 
-    n++;
-}, 2000);
+//     n++;
+// }, 2000);
 
 
 function createFakeData(one, two){
