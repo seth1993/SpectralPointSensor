@@ -39,7 +39,7 @@ server.listen(3000, function () {
 io.on('connection', function (socket){
     socket.on('server', function(data){//Recieving data from user
         console.log(data);
-        interpretData(data);
+        sendDataToRF(data);
     });
 });
 
@@ -47,48 +47,36 @@ io.on('connection', function (socket){
 xbeeAPI.on("frame_object", function(frame) {
     var data = frame.data + '';
     console.log(data);
-    decipherData(data);
+    sendDataToClient(data);
 });
 
-/*
-        Data recieving: 
-            Client: interpretData(data)
-            RF: decipherData(data)
-        Data sending:
-            Client: io.sockets.emit('client', data)
-            RF: in progress
-*/
+var testData = [
+    {
+        name: 'alpha',
+        temp: '71.2',
+        state: 'OFF'
+    },
+    {
+        name: 'bravo',
+        temp: '71.3',
+        state: 'ON'
+    }
+]
 
+var savedstates = new Object();
 
-function interpretData(data){
+function sendDataToRF(data){
+    console.info("From Client: " + JSON.stringify(data));
     if(data === 'finddevices'){
-        console.log("We're working to find devices");
-        console.log(JSON.stringify(portsOpen));
-        //Need to have code here to actually find how many devices
-        var numberOfDevices = 2;//For testing
-        var deviceList = [];
-        for(var i = 0; i < numberOfDevices; i++){
-            if(i == 0){
-                var o = new Object();
-                o.name = 'alpha';
-                o.state = 'OFF';
-                deviceList.push(o);
-            } else if(i == 1){
-                var o = new Object();
-                o.name = 'bravo';
-                o.state = 'OFF';
-                deviceList.push(o);
-            }
+        if(portsOpen[0] != 'one' || portsOpen[1] != 'two'){
+            sendPacket('TURN ON');
         }
-        io.sockets.emit('client', {devices: deviceList/*['ALPHA', 'BRAVO']*/});
-    } else if(data === 'update'){
-        var a = 'alpha@data@1@1,2,3,4,5';
-        var b = 'bravo@data@2@6,7,8,9,10';
-        //var c = 'alpha@data@3@11,12,13,14,15';
-        decipherData(b);
-        decipherData(a);
-        //decipherData(b);
-    } else if (data.state){
+        //Testing
+        io.sockets.emit('client', {devices: testData});
+    } if (data.state){
+        sendPacket(data.name + '@statechange@'+ data.state);
+
+        //Testing
         var statechange;
         if(data.state === 'ON'){
             statechange = {state: 'ON', name: data.name}
@@ -101,28 +89,46 @@ function interpretData(data){
         } if(statechange){
             io.sockets.emit('client', statechange);
         }
+    } if(data.temp){
+        sendPacket(data.name + '@changetemp@' + data.temp);
+    } if(data.integTime){
+        sendPacket(data.name + '@changeinteg@' + data.integTime);
     }
 }
 
 
-function decipherData(data) {
+function sendDataToClient(datastring) {  
   var incomingData;
-  var arrayData = data.split('@', 4);//Splits at @ symbol, limit 4 splits
-  if(arrayData[1] === 'data'){
-      incomingData = {
-          unit: arrayData[0],
-          command: arrayData[1],
-          message: arrayData[2],
-          data: [1,2,3,4,5]//arrayData[3]
+  var data = datastring.split('@');//Splits at @ symbol
+
+  //If device isnt listed, save it
+  if(!savedstates[data[0]]){
+      //Defaults
+      savedstates[data[0]] = {
+          temp: 72,
+          state: 'OFF',
+          integTime: 1
       }
-  } else if(arrayData.length === 3){
-      incomingData = {
-          unit: arrayData[0],
-          command: arrayData[1],
-          message: arrayData[2]
+  }
+
+  if(data[1] === 'temp'){
+      savedstates[data[0]].temp = data[2];
+      io.sockets.emit('client', {name: data[0],temp: data[2]})
+  } else if(data[1] === 'state'){
+      savedstates[data[0]].state = data[2];
+      io.sockets.emit('client', {name: data[0],state: data[2]})
+  } else if(data[1] === 'data'){
+      data[3] = data[3].replace(/[^0-9.,]/g, "");//Error handling
+      //Beggining of new set - send old one
+      if(data[2] === '1'){
+          if(savedstates[data[0]].data){
+            var listofdata = savedstates[data[0]].data.split(",");
+            io.sockets.emit('client', {name: data[0], data: listofdata});
+          }
+          savedstates[data[0]].data = data[3];
+      } else {
+          savedstates[data[0]].data += "," + data[3];
       }
-  } if(incomingData){
-      io.sockets.emit('client', incomingData);
   }
 }
 
@@ -146,7 +152,7 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
               });
               portNew.on('data', function (data) {
                   console.log(data);
-                  decipherData(data);
+                  sendDataToClient(data);
               });
           });
       }
@@ -191,10 +197,10 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
                       });
                       portOne.on('data', function (data) {
                           console.log(data);
-                          decipherData(data);
+                          sendDataToClient(data);
                       });
                   });
-                  portsOpen[1] = port.comName;
+                  portsOpen[0] = port.comName;
 
               } if(port.manufacturer === 'FTDI' || port.manufacturer === 'ftdi'){//If XBee dongle or shield
                   console.log("Found XBee Unit");
@@ -210,7 +216,7 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
                           console.log('XBEE - First Packet Sent');
                       });
                   });
-                  portsOpen[2] = port.comName;
+                  portsOpen[1] = port.comName;
               }
 
           });
@@ -220,21 +226,22 @@ function connect (name, baudRate, dataBits, stopBits, parity, bufferSize) {
 
   }
 
-  
-var frame_obj = {
-    type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
-    id: 0x01, // optional, nextFrameId() is called per default 
-    destination64: "000000000000ffff", // default is broadcast address 
-    destination16: "fffe", // default is "fffe" (unknown/broadcast) 
-    sourceEndpoint: 0x00,
-    destinationEndpoint: 0x00,
-    clusterId: "1554",
-    profileId: "C105",
-    broadcastRadius: 0x00, // optional, 0x00 is default 
-    options: 0x00, // optional, 0x00 is default 
-    data: "Hey Jake! What's up!" // Can either be string or byte array. 
-};
-var message = xbeeAPI.buildFrame(frame_obj);
+function sendPacket(dataToSend){
+    var frame_obj = {
+        type: 0x11, // xbee_api.constants.FRAME_TYPE.ZIGBEE_TRANSMIT_REQUEST 
+        id: 0x01, // optional, nextFrameId() is called per default 
+        destination64: "000000000000ffff", // default is broadcast address 
+        destination16: "fffe", // default is "fffe" (unknown/broadcast) 
+        sourceEndpoint: 0x00,
+        destinationEndpoint: 0x00,
+        clusterId: "1554",
+        profileId: "C105",
+        broadcastRadius: 0x00, // optional, 0x00 is default 
+        options: 0x00, // optional, 0x00 is default 
+        data: dataToSend // Can either be string or byte array. 
+    };
+    var message = xbeeAPI.buildFrame(frame_obj);
+}
 
 
 
@@ -275,10 +282,38 @@ var message = xbeeAPI.buildFrame(frame_obj);
 //   });
 // }
 
+var n = 0;
+setInterval(function(){
+    if(n == 0){
+        sendDataToClient('bravo@data@1@'+ createFakeData(0,100));
+    } else if(n == 1){
+        sendDataToClient('bravo@data@2@'+ createFakeData(100,200));
+    } else if(n == 2){
+        sendDataToClient('bravo@data@1@'+ createFakeData(200,300));
+        n = 0;
+    }// else if(n == 3){
+    //     sendDataToClient('alpha@data@1@'+ createFakeData(800,1000));
+    // } else if(n == 4){
+    //     n = 0;
+    // }
+
+    n++;
+}, 2000);
 
 
-
-
+function createFakeData(one, two){
+    var d = " " ;
+    for(var i = one; i < two; i++) {
+        if(i == 0){
+            d = "18000";
+        } else if(i < 320){
+            d += "," + (Math.random()*150 + 18000 + i);
+        } else {
+             d += "," + (Math.random()*250 + 18220 - i);
+        }
+    }
+    return d;
+}
 
 
 

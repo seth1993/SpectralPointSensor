@@ -3,6 +3,7 @@ var co = document.getElementById("console");
 var main = document.getElementById('main');
 var graphs = [];
 
+//Initialize UI Components
 sendDataToServer('finddevices');
 
 socket.on('client', function (data) {
@@ -10,31 +11,24 @@ socket.on('client', function (data) {
     readIncomingData(data);
 });
 
-
 function sendDataToServer(dataToSend) {
     socket.emit('server', dataToSend);
 }
 
-
-
-//Important: Seperates Incoming Server Data into different concerns
+//Incoming Server Data
 function readIncomingData(data){
     if(data.devices){
         createComponent(data.devices);
     } if(data.command && data.message){
-        var datapart = "";
-        if(data.data){
-            datapart = ": " + data.data;
-        }
-        var addedstring = data.command.toString().toUpperCase() + ":  \t" + data.message + datapart +" \n";
-        var para = document.createElement("p");
-        var node = document.createTextNode(addedstring);
-        para.appendChild(node);
-        co.appendChild(para);
-    } if(data.command === 'data'){
-        changeData(data.unit, data.data);
+        printToConsole(data);
+    } if(data.data){
+        changeData(data.name, data.data);
     } if(data.state){
         changeState(data.name.toUpperCase(), data.state);
+    } if(data.temp){
+
+    } if(data.integTime){
+
     }
 }
 
@@ -95,6 +89,18 @@ function changeState(name, state){
         //Figure out
     }
     setDeviceSettings(name, state);
+}
+
+function printToConsole(data){
+    var datapart = "";
+    if(data.data){
+        datapart = ": " + data.data;
+    }
+    var addedstring = data.command.toString().toUpperCase() + ":  \t" + data.message + datapart +" \n";
+    var para = document.createElement("p");
+    var node = document.createTextNode(addedstring);
+    para.appendChild(node);
+    co.appendChild(para);
 }
 
 //Chart Random Array and Chart Defaults
@@ -162,8 +168,15 @@ function changeData(name,data){
     }
     if(data){
         myLiveCharts[name].data.datasets[0].data = data;
+        myLiveCharts[name].data.labels = makeArray(data.length);
         myLiveCharts[name].update();
     }
 };
 
-
+function makeArray(num){
+    var a = [];
+    for(var i = 0; i < num; i++){
+        a.push(i);
+    }
+    return a;
+}
