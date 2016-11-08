@@ -90,9 +90,9 @@ function sendDataToRF(data){
             io.sockets.emit('client', statechange);
         }
     } if(data.temp){
-        sendPacket(data.name + '@changetemp@' + data.temp);
+        //sendPacket(data.name + '@changetemp@' + data.temp);
     } if(data.integTime){
-        sendPacket(data.name + '@changeinteg@' + data.integTime);
+        //sendPacket(data.name + '@changeinteg@' + data.integTime);
     }
 }
 
@@ -120,14 +120,16 @@ function sendDataToClient(datastring) {
   } else if(data[1] === 'data'){
       data[3] = data[3].replace(/[^0-9.,]/g, "");//Error handling
       //Beggining of new set - send old one
-      if(data[2] === '1'){
+      if(data[2] === '30'){
+          savedstates[data[0]].data += data[3];
           if(savedstates[data[0]].data){
             var listofdata = savedstates[data[0]].data.split(",");
             io.sockets.emit('client', {name: data[0], data: listofdata});
           }
-          savedstates[data[0]].data = data[3];
+      } else if(data[2] === '0'){
+          savedstates[data[0]].data = data[3] + ',';
       } else {
-          savedstates[data[0]].data += "," + data[3];
+          savedstates[data[0]].data += data[3] + ',';
       }
   }
 }
@@ -282,7 +284,7 @@ function sendPacket(dataToSend){
 //   });
 // }
 
-var n = 0;
+//var n = 0;
 // setInterval(function(){
 //     if(n == 0){
 //         sendDataToClient('bravo@data@1@'+ createFakeData(0,100));
@@ -301,19 +303,19 @@ var n = 0;
 // }, 2000);
 
 
-function createFakeData(one, two){
-    var d = " " ;
-    for(var i = one; i < two; i++) {
-        if(i == 0){
-            d = "18000";
-        } else if(i < 320){
-            d += "," + (Math.random()*150 + 18000 + i);
-        } else {
-             d += "," + (Math.random()*250 + 18220 - i);
-        }
-    }
-    return d;
-}
+// function createFakeData(one, two){
+//     var d = " " ;
+//     for(var i = one; i < two; i++) {
+//         if(i == 0){
+//             d = "18000";
+//         } else if(i < 320){
+//             d += "," + (Math.random()*150 + 18000 + i);
+//         } else {
+//              d += "," + (Math.random()*250 + 18220 - i);
+//         }
+//     }
+//     return d;
+// }
 
 
 

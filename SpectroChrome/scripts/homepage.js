@@ -1,5 +1,3 @@
-var socket = io.connect('http://localhost:3000');
-var co = document.getElementById("console");
 var main = document.getElementById('main');
 var graphs = [];
 
@@ -19,8 +17,6 @@ function sendDataToServer(dataToSend) {
 function readIncomingData(data){
     if(data.devices){
         createComponent(data.devices);
-    } if(data.command && data.message){
-        printToConsole(data);
     } if(data.data){
         changeData(data.name, data.data);
     } if(data.state){
@@ -37,7 +33,7 @@ function createComponent(graphs){
     main.innerHTML = '';
     for(var i = 0; i < graphs.length; i++){
         var name = graphs[i].name.toUpperCase();
-        var htmlObject = '<div id="'+ name +'"><section><a id="'+name+'1power"><span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span></a><h4 id="'+name+'@name" >'+ name +'</h4><article><a id="'+ name +'1play" ><span id="'+name+'@play" onClick="reply_click(this.id)" class="icon-play3"></span></a><a id="'+name+'1stop" ><span id="'+name+'@stop" onClick="reply_click(this.id)" class="icon-stop2"></span></a></article><article><p id="'+name+'@time">00:00:00</p></article><article><p>TEMP:</p><span id="'+name+'@templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'@settemp">72</p><span id="'+name+'@tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p id="'+name+'@temp">70</p><p>°</p></article><article><p>FILE NAME OF TEST:</p><textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea></article><article><p>INTEG:</p><span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span><p id="'+name+'@absorbance">01.00</p><span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span><p>sec</p></article></section><section><canvas id="'+name+'mychart" width="700" height="200"></canvas></section></div>';
+        htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name +'</h4> <a id="'+ name +'1play"> <span id="'+name+'@play" onClick="reply_click(this.id)" class="icon-play3"></span> </a> <a id="'+name+'1stop"> <span id="'+name+'@stop" onClick="reply_click(this.id)" class="icon-stop2"></span> </a> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>TEMP:</p> <span id="'+name+'@templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@settemp">72</p> <span id="'+name+'@tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>| INTEG:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> <article> <p>TEST:</p> <textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea> </article> </section> </div>';
         main.innerHTML += htmlObject;
         changeState(name, graphs[i].state);
     }
@@ -91,18 +87,6 @@ function changeState(name, state){
     setDeviceSettings(name, state);
 }
 
-function printToConsole(data){
-    var datapart = "";
-    if(data.data){
-        datapart = ": " + data.data;
-    }
-    var addedstring = data.command.toString().toUpperCase() + ":  \t" + data.message + datapart +" \n";
-    var para = document.createElement("p");
-    var node = document.createTextNode(addedstring);
-    para.appendChild(node);
-    co.appendChild(para);
-}
-
 //Chart Random Array and Chart Defaults
 var arrayOfRandom = [];
 var arrayOfRandomTwo = [];
@@ -116,7 +100,10 @@ for(var i = 0; i < 2048; i++){
 var options = {
         scales: {
             xAxes: [{
-                display: false
+                display: true,
+                ticks: {
+                    autoSkipPadding: 20
+                }
             }]
         },
         elements: {
@@ -126,7 +113,10 @@ var options = {
         },
         legend: {
             display: false
-        }
+        },
+        defaultColor: "rgb(255, 255, 255)",
+        defaultFontColor: "rgb(253, 253, 253)",
+        defaultFontSize: "16px"
 };
 
 var startingData = {
@@ -134,7 +124,7 @@ var startingData = {
     labels: index,
     datasets: [
         {
-            backgroundColor: "rgba(0,4,128)",
+            backgroundColor: "rgb(246, 246, 246)",
             data: arrayOfRandom
         }/*,
         {
@@ -159,6 +149,7 @@ function createChart(name){
     var canvas = document.getElementById(name+ 'mychart');
     var ctx = canvas.getContext('2d');
     myLiveCharts[name] = new Chart(ctx, stuff);
+    //myLiveCharts[name].defualts.global.defaultColor = rgb(255, 255, 255);
 }
 
 function changeData(name,data){

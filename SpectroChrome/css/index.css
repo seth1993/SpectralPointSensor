@@ -1,0 +1,114 @@
+body {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'quicksand';
+  font-size: 16px;
+  background-color: #1a1a1a;
+  color: #ccc;
+}
+main {
+  margin-top: 20px;
+  width: 100%;
+  overflow-y: scroll;
+  text-align: center;
+}
+main h4 {
+  margin: 0;
+  padding: 0;
+}
+main div {
+  background-color: #333;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+  width: 95%;
+}
+main div section:nth-of-type(1) {
+  display: block;
+}
+main div section:nth-of-type(2) {
+  display: block;
+  text-align: center;
+}
+main div p,
+main div a,
+main div span,
+main div h4 {
+  display: inline;
+}
+main div article {
+  display: inline-block;
+  background-color: #4d4d4d;
+  margin: 3px;
+  padding: 6px;
+  border-radius: 2px;
+  vertical-align: center;
+}
+main div textarea {
+  display: inline-block;
+  resize: none;
+  opacity: 0.45;
+  height: 14px;
+  width: 180px;
+  vertical-align: bottom;
+  border: .1px;
+}
+aside {
+  z-index: 2;
+  width: 100%;
+  background-color: #333;
+  text-align: center;
+}
+aside h1 {
+  margin: 0;
+  padding: 10px;
+}
+aside section {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 28px;
+  margin: 8px;
+  vertical-align: middle;
+  font-size: 28px;
+}
+@font-face {
+  font-family: 'quicksand';
+  src: url("../fonts/quicksand/Quicksand-Regular.otf");
+}
+.red {
+  color: #ff8080;
+}
+.red:hover {
+  color: #f00;
+}
+.green {
+  color: #90ee90;
+}
+.green:hover {
+  color: #008000;
+}
+.lightgrey {
+  color: #ccc;
+}
+.on {
+  color: #90ee90;
+}
+.on:hover {
+  color: #f00;
+}
+.off {
+  color: #f00;
+}
+.off:hover {
+  color: #008000;
+}
+
+.icon-circle-left:hover {
+  color: black;
+}
+
+.icon-circle-right:hover{
+  color: black;
+}
