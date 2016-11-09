@@ -1784,7 +1784,14 @@ var main = document.getElementById('main');
 var states = new Object();
 var xbeeport;
 
-Toast.defaults.displayDuration=6000;
+//ToDo
+//-Make graph stay consistent even with missing data
+//-Seemless connection to usb port even on close reopen
+//-Display toast information after manual click on search 1.)either ftdi is found but no data (no connected boxes) 2.) no ftdi driver
+//-Update time and temp
+
+
+Toast.defaults.displayDuration=10000;
 Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...");
 
 //Get current serial ports
@@ -1870,7 +1877,7 @@ function reply_click(id){
     var clickFunction = id.split('@', 2);//Array [0] Name [1] ClickType
     var unit = clickFunction[0];
 
-    if(clickFunction[1] == 'templeft'){
+    /*if(clickFunction[1] == 'templeft'){
         var currentvalue = parseInt(document.getElementById(unit+'@settemp').innerText);
         if(currentvalue > 1){
             document.getElementById(unit + '@settemp').innerText = currentvalue - 1;
@@ -1882,7 +1889,7 @@ function reply_click(id){
             document.getElementById(unit + '@settemp').innerText = currentvalue + 1;
             sendPacket(unit + "@temp@" + currentvalue);
         }
-    } else if(clickFunction[1] === 'absorbleft'){
+    } else*/ if(clickFunction[1] === 'absorbleft'){
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
         if(currentvalue > .2){
             document.getElementById(unit + '@absorbance').innerText = (currentvalue - .1).toFixed(2);
@@ -1894,11 +1901,11 @@ function reply_click(id){
             document.getElementById(unit + '@absorbance').innerText = (currentvalue + .1).toFixed(2);
             sendPacket(unit + "@absorbance@" + currentvalue);
         }
-    } else if(clickFunction[1] === 'play' && states[unit].state === 'ON'){
+    } /* else if(clickFunction[1] === 'play' && states[unit].state === 'ON'){
             sendPacket(unit + "@state@run");
     } else if(clickFunction[1] === 'stop' && states[unit].state === 'RUN'){
             sendPacket(unit + "@state@on");
-    } else if(clickFunction[1] === 'power'){
+    } */else if(clickFunction[1] === 'power'){
         if(states[unit].state === 'OFF'){
             sendPacket(unit + "@state@on");
         } else if(states[unit].state === 'ON'){
@@ -1911,29 +1918,31 @@ function createStateAndComponent(data){
     //main.innerHTML = '';
     var name = data.name;
     states[name] = {name : data.name, temp: 72, integ: 1, state: "OFF"};
-    htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <a id="'+ name +'1play"> <span id="'+name+'@play" onClick="reply_click(this.id)" class="icon-play3"></span> </a> <a id="'+name+'1stop"> <span id="'+name+'@stop" onClick="reply_click(this.id)" class="icon-stop2"></span> </a> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>TEMP:</p> <span id="'+name+'@templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@settemp">72</p> <span id="'+name+'@tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>| INTEG:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> <article> <p>TEST:</p> <textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea> </article> </section> </div>';
+    htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>INTEG:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> <article> <p>TEST:</p> <textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea> </article> </section> </div>';
     main.innerHTML += htmlObject;
     changeState(name, "OFF");
     createChart(name);
 }
+//Took out --- <a id="'+ name +'1play"> <span id="'+name+'@play" onClick="reply_click(this.id)" class="icon-play3"></span> </a> <a id="'+name+'1stop"> <span id="'+name+'@stop" onClick="reply_click(this.id)" class="icon-stop2"></span> </a>
+//         --- <p>TEMP:</p> <span id="'+name+'@templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@settemp">72</p> <span id="'+name+'@tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>|
 
 function changeState(name, newState){
     if(newState === 'OFF'){
-        hideObject(name + '1stop', 1);
-        hideObject(name + '1play', 0);
+        //hideObject(name + '1stop', 1);
+        //hideObject(name + '1play', 0);
         changeColor(name, 'power', 'off');
-        changeColor(name, 'play', 'lightgrey');
+        //changeColor(name, 'play', 'lightgrey');
     }if(newState === 'ON'){
-        hideObject(name + '1stop', 1);
-        hideObject(name + '1play', 0);
+        //hideObject(name + '1stop', 1);
+        //hideObject(name + '1play', 0);
         changeColor(name, 'power', 'on');
-        changeColor(name, 'play', 'green');
-    }if(newState === 'RUN'){
+        //changeColor(name, 'play', 'green');
+    }/*if(newState === 'RUN'){
         hideObject(name + '1play', 1);
         hideObject(name + '1stop', 0);
         changeColor(name, 'power', 'lightgrey');
         changeColor(name, 'stop', 'red');
-    }if(newState === 'ERROR'){
+    }*/if(newState === 'ERROR'){
         //Figure out
     }
     if(states[name]){
@@ -1941,8 +1950,9 @@ function changeState(name, newState){
     }
 }
 
-function changeTemp(){
-    
+function changeTemp(info){
+    var htmlTemp = document.getElementById(info.name + '@temp');
+    htmlTemp.innerHTML = parserFloat(info.temp) * (9.0/5.0) + 32;
 }
 
 function hideObject(toHide, bool) {
@@ -1960,11 +1970,11 @@ function hideObject(toHide, bool) {
 }
 
 function changeColor(name, type, color){
-    if(type === 'play'){
+    /*if(type === 'play'){
         document.getElementById(name+'1'+type).className = color;
     } if(type === 'stop'){
         document.getElementById(name+'1'+type).className = color;
-    } if(type === 'power'){
+    }*/ if(type === 'power'){
         document.getElementById(name+'1'+type).className = color;
     }
 };
@@ -1975,7 +1985,7 @@ var arrayOfRandomTwo = [];
 var index = [];
 for(var i = 0; i < 2048; i++){
     index.push(i);
-    arrayOfRandom.push(Math.random() + 4);
+    arrayOfRandom.push(0);
     arrayOfRandomTwo.push(Math.random()+ 4);
 }
 
