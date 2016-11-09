@@ -5,6 +5,9 @@ var main = document.getElementById('main');
 var states = new Object();
 var xbeeport;
 
+Toast.defaults.displayDuration=10000;
+Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...");
+
 //Get current serial ports
 getCurrentSerialConnections();
 
@@ -41,24 +44,6 @@ xbeeAPI.on("frame_object", function(frame) {
       }
     }
 });
-
-function toBuffer(ab) {
-    var buffer = new Buffer(ab.byteLength);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buffer.length; ++i) {
-        buffer[i] = view[i];
-    }
-    return buffer;
-}
-
-function toArrayBuffer(buffer) {
-    var ab = new ArrayBuffer(buffer.length);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buffer.length; ++i) {
-        view[i] = buffer[i];
-    }
-    return ab;
-}
 
 function getCurrentSerialConnections(){
   serialPort.list(function (err, ports) {
