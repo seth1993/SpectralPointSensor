@@ -2,7 +2,7 @@
   "name": "Spectro",
   "description": "Remote Testing of Chemicals Sensors",
   "version": "0.1",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": [
     "serial",
     "<all_urls>",
