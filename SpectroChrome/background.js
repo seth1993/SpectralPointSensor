@@ -5,4 +5,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
       'height': 1000
     }//state: "fullscreen"
   });
+  chrome.app.window.get('index.html').onClosed.addListener(function(){
+    console.log("closed");
+  })
 });

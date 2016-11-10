@@ -1791,14 +1791,17 @@ var xbeeport;
 //-Update time and temp
 
 
-Toast.defaults.displayDuration=10000;
-Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...");
+Toast.defaults.displayDuration=3000;
+Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
+
 
 //Get current serial ports
+hideObject('turn-all', 1);
 getCurrentSerialConnections();
 
 //Parse/Send Xbee packets
 var xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2});
+
 
 //Recieving Data over RF link
 xbeeAPI.on("frame_object", function(frame) {
@@ -1836,9 +1839,12 @@ function getCurrentSerialConnections(){
     ports.forEach(function(port) {
         console.info(port);
       if(port.vendorId === '0x403'){
+        Toast.info("Found Xbee Serial Port");
         console.log("Found Xbee");
         savedstates = new Object();
-        xbeeport = new SerialPort("/dev/tty.usbserial-DN01ITGO", {baudRate: 230400}, function(err){
+        hideObject('turn-all', 0);
+        hideObject('loader', 1);
+        xbeeport = new SerialPort(port.comName/*"/dev/tty.usbserial-DN01ITGO"*/, {baudRate: 230400}, function(err){
             if(err){
                 return console.log('Error: ', err.message);
             }
@@ -1850,9 +1856,17 @@ function getCurrentSerialConnections(){
             });
         });
       }if(port.vendorId === '0xd28'){
-          console.log("Found FRDM");
+        console.log("Found FRDM");
+        Toast.info('Found FRDM Serial Port');
+        hideObject('turn-all', 1);
+        hideObject('loader', 0);
       }
     });
+    if(!(xbeeport)){
+        Toast.info('No Xbee Unit Found');
+        hideObject('turn-all', 0);
+        hideObject('loader', 1);
+    }
   });
 }
 
@@ -1874,22 +1888,18 @@ function sendPacket(dataToSend){
 }    
 
 function reply_click(id){
+    if(id === 'turn-all'){
+        console.log("Here");
+        hideObject('turn-all', 1);
+        hideObject('loader', 0);
+        getCurrentSerialConnections();
+    }
+
     var clickFunction = id.split('@', 2);//Array [0] Name [1] ClickType
     var unit = clickFunction[0];
-
-    /*if(clickFunction[1] == 'templeft'){
-        var currentvalue = parseInt(document.getElementById(unit+'@settemp').innerText);
-        if(currentvalue > 1){
-            document.getElementById(unit + '@settemp').innerText = currentvalue - 1;
-            sendPacket(unit + "@temp@" + currentvalue);
-        }
-    } else if(clickFunction[1] === 'tempright'){
-        var currentvalue = parseInt(document.getElementById(unit+'@settemp').innerText);
-        if(currentvalue < 100){
-            document.getElementById(unit + '@settemp').innerText = currentvalue + 1;
-            sendPacket(unit + "@temp@" + currentvalue);
-        }
-    } else*/ if(clickFunction[1] === 'absorbleft'){
+    
+    if(clickFunction[1] === 'absorbleft'){
+        console.log("Absorb Left");
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
         if(currentvalue > .2){
             document.getElementById(unit + '@absorbance').innerText = (currentvalue - .1).toFixed(2);
@@ -1901,11 +1911,7 @@ function reply_click(id){
             document.getElementById(unit + '@absorbance').innerText = (currentvalue + .1).toFixed(2);
             sendPacket(unit + "@absorbance@" + currentvalue);
         }
-    } /* else if(clickFunction[1] === 'play' && states[unit].state === 'ON'){
-            sendPacket(unit + "@state@run");
-    } else if(clickFunction[1] === 'stop' && states[unit].state === 'RUN'){
-            sendPacket(unit + "@state@on");
-    } */else if(clickFunction[1] === 'power'){
+    } else if(clickFunction[1] === 'power'){
         if(states[unit].state === 'OFF'){
             sendPacket(unit + "@state@on");
         } else if(states[unit].state === 'ON'){
@@ -1915,7 +1921,6 @@ function reply_click(id){
 }
 
 function createStateAndComponent(data){
-    //main.innerHTML = '';
     var name = data.name;
     states[name] = {name : data.name, temp: 72, integ: 1, state: "OFF"};
     htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>INTEG:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> <article> <p>TEST:</p> <textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea> </article> </section> </div>';
@@ -1923,29 +1928,15 @@ function createStateAndComponent(data){
     changeState(name, "OFF");
     createChart(name);
 }
-//Took out --- <a id="'+ name +'1play"> <span id="'+name+'@play" onClick="reply_click(this.id)" class="icon-play3"></span> </a> <a id="'+name+'1stop"> <span id="'+name+'@stop" onClick="reply_click(this.id)" class="icon-stop2"></span> </a>
-//         --- <p>TEMP:</p> <span id="'+name+'@templeft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@settemp">72</p> <span id="'+name+'@tempright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>|
 
 function changeState(name, newState){
     if(newState === 'OFF'){
-        //hideObject(name + '1stop', 1);
-        //hideObject(name + '1play', 0);
         changeColor(name, 'power', 'off');
-        //changeColor(name, 'play', 'lightgrey');
     }if(newState === 'ON'){
-        //hideObject(name + '1stop', 1);
-        //hideObject(name + '1play', 0);
         changeColor(name, 'power', 'on');
-        //changeColor(name, 'play', 'green');
-    }/*if(newState === 'RUN'){
-        hideObject(name + '1play', 1);
-        hideObject(name + '1stop', 0);
-        changeColor(name, 'power', 'lightgrey');
-        changeColor(name, 'stop', 'red');
-    }*/if(newState === 'ERROR'){
+    }if(newState === 'ERROR'){
         //Figure out
-    }
-    if(states[name]){
+    }if(states[name]){
         states[name].state = newState;
     }
 }
@@ -1965,16 +1956,12 @@ function hideObject(toHide, bool) {
         var hide = document.getElementById(toHide);
         hide.style.height = '30px';
         hide.style.visibility = 'visible';
-        hide.style.padding = '4px';
+        //hide.style.padding = '4px';
     }
 }
 
 function changeColor(name, type, color){
-    /*if(type === 'play'){
-        document.getElementById(name+'1'+type).className = color;
-    } if(type === 'stop'){
-        document.getElementById(name+'1'+type).className = color;
-    }*/ if(type === 'power'){
+    if(type === 'power'){
         document.getElementById(name+'1'+type).className = color;
     }
 };

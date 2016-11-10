@@ -15,11 +15,14 @@ var xbeeport;
 Toast.defaults.displayDuration=3000;
 Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
 
+
 //Get current serial ports
+hideObject('turn-all', 1);
 getCurrentSerialConnections();
 
 //Parse/Send Xbee packets
 var xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2});
+
 
 //Recieving Data over RF link
 xbeeAPI.on("frame_object", function(frame) {
@@ -60,8 +63,9 @@ function getCurrentSerialConnections(){
         Toast.info("Found Xbee Serial Port");
         console.log("Found Xbee");
         savedstates = new Object();
-        hideObject('turn-all', 1);
-        xbeeport = new SerialPort("/dev/tty.usbserial-DN01ITGO", {baudRate: 230400}, function(err){
+        hideObject('turn-all', 0);
+        hideObject('loader', 1);
+        xbeeport = new SerialPort(port.comName/*"/dev/tty.usbserial-DN01ITGO"*/, {baudRate: 230400}, function(err){
             if(err){
                 return console.log('Error: ', err.message);
             }
@@ -73,11 +77,16 @@ function getCurrentSerialConnections(){
             });
         });
       }if(port.vendorId === '0xd28'){
-          console.log("Found FRDM");
+        console.log("Found FRDM");
+        Toast.info('Found FRDM Serial Port');
+        hideObject('turn-all', 1);
+        hideObject('loader', 0);
       }
     });
     if(!(xbeeport)){
         Toast.info('No Xbee Unit Found');
+        hideObject('turn-all', 0);
+        hideObject('loader', 1);
     }
   });
 }
@@ -100,10 +109,18 @@ function sendPacket(dataToSend){
 }    
 
 function reply_click(id){
+    if(id === 'turn-all'){
+        console.log("Here");
+        hideObject('turn-all', 1);
+        hideObject('loader', 0);
+        getCurrentSerialConnections();
+    }
+
     var clickFunction = id.split('@', 2);//Array [0] Name [1] ClickType
     var unit = clickFunction[0];
     
     if(clickFunction[1] === 'absorbleft'){
+        console.log("Absorb Left");
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
         if(currentvalue > .2){
             document.getElementById(unit + '@absorbance').innerText = (currentvalue - .1).toFixed(2);
@@ -121,8 +138,6 @@ function reply_click(id){
         } else if(states[unit].state === 'ON'){
             sendPacket(unit + "@state@off");
         }
-    } else if(clickFunction[1] === 'turn-all'){
-        getCurrentSerialConnections();
     }
 }
 
@@ -162,7 +177,7 @@ function hideObject(toHide, bool) {
         var hide = document.getElementById(toHide);
         hide.style.height = '30px';
         hide.style.visibility = 'visible';
-        hide.style.padding = '4px';
+        //hide.style.padding = '4px';
     }
 }
 
