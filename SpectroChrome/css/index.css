@@ -9,7 +9,6 @@ body {
 main {
   margin-top: 20px;
   width: 100%;
-  overflow-y: scroll;
   text-align: center;
 }
 main h4 {
@@ -111,4 +110,28 @@ aside section {
 
 .icon-circle-right:hover{
   color: black;
+}
+
+.loader {
+  border: 4px solid #404040;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#turn-all:hover {
+  color: #3498db;
 }
