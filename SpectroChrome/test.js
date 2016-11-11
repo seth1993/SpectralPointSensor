@@ -15,16 +15,16 @@ var xbeeport = [];
 Toast.defaults.displayDuration=3000;
 //Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
 
-var onGetDevices = function(ports) {
-  for (var i=0; i<ports.length; i++) {
-    console.log(ports[i]);
-    if(ports[i].vendorId == 3368){
-        connect(ports[i].path, "FRDM Board");
-    } else if(ports[i].vendorId == 0000){
-        connect(ports[i].path, "Xbee");
-    }
-  }
-}
+// var onGetDevices = function(ports) {
+//   for (var i=0; i<ports.length; i++) {
+//     console.log(ports[i]);
+//     if(ports[i].vendorId == 3368){
+//         connect(ports[i].path, "FRDM Board");
+//     } else if(ports[i].vendorId == 0000){
+//         connect(ports[i].path, "Xbee");
+//     }
+//   }
+// }
 
 //Get current serial ports
 hideObject('turn-all', 1);
@@ -71,7 +71,7 @@ function getCurrentSerialConnections(){
     serialPort.list(function (err, ports) {
         console.log("Serial Port List:");
         ports.forEach(function(port) {
-            console.info(port.comName);
+            console.info(JSON.stringify(port));
             if(port.vendorId === '0x403'){
                 connect(port.comName, "Xbee");
             }if(port.vendorId === '0xd28'){
@@ -81,8 +81,9 @@ function getCurrentSerialConnections(){
     });
 }
 
+
 function connect(portName, name){
-    if(/*portName.indexOf('/cu') == -*/1){
+    if(portName.indexOf('/cu') == -1){
         var sp = new SerialPort(portName, {baudrate: 230400}, true);
 
         sp.on("open", function(){
@@ -100,7 +101,7 @@ function connect(portName, name){
                 Toast.error("Serial Port Error");
             });
 
-            sp.on("data", function(data){
+            sp.on('data', function(data){
                 console.log(" " + data);
                 if(name = 'Xbee'){
                     xbeeAPI.parseRaw(data);
