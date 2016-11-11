@@ -1,7 +1,7 @@
 {
   "name": "Spectro",
   "description": "Remote Testing of Chemicals Sensors",
-  "version": "0.1",
+  "version": "0.4",
   "manifest_version": 3,
   "permissions": [
     "serial",

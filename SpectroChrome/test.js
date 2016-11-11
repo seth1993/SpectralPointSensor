@@ -8,27 +8,13 @@ var xbeeport = [];
 //ToDo
 //-Make graph stay consistent even with missing data
 //-Seemless connection to usb port even on close reopen
-//-Display toast information after manual click on search 1.)either ftdi is found but no data (no connected boxes) 2.) no ftdi driver
 //-Update time and temp
 
 
 Toast.defaults.displayDuration=3000;
 //Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
 
-// var onGetDevices = function(ports) {
-//   for (var i=0; i<ports.length; i++) {
-//     console.log(ports[i]);
-//     if(ports[i].vendorId == 3368){
-//         connect(ports[i].path, "FRDM Board");
-//     } else if(ports[i].vendorId == 0000){
-//         connect(ports[i].path, "Xbee");
-//     }
-//   }
-// }
-
-//Get current serial ports
 hideObject('turn-all', 1);
-//chrome.serial.getDevices(onGetDevices);
 getCurrentSerialConnections();
 
 //Parse/Send Xbee packets
@@ -66,7 +52,6 @@ xbeeAPI.on("frame_object", function(frame) {
     }
 });
 
-
 function getCurrentSerialConnections(){
     serialPort.list(function (err, ports) {
         console.log("Serial Port List:");
@@ -80,7 +65,6 @@ function getCurrentSerialConnections(){
         });
     });
 }
-
 
 function connect(portName, name){
     if(portName.indexOf('/cu') == -1){
@@ -112,23 +96,6 @@ function connect(portName, name){
         xbeeport.push(sp);
     }
 }
-
-// var onConnect = function(connectionInfo){
-//     console.log(connectionInfo);
-// }
-
-// function connect(portName, name){
-//     //if(portName.indexOf('/cu') == -1){
-//         chrome.serial.connect(portName, {bitrate: 230400}, onConnect);
-//     //}
-// }
-
-// var onCallback = function(data){//needs to be info.data
-//     //xbeeAPI.parseRaw(data);
-//     console.log("D: " + JSON.stringify(data));
-// }
-// chrome.serial.onReceive.addListener(onCallback);
-
 
 function sendPacket(dataToSend){
     var frame_obj = {
