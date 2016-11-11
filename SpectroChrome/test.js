@@ -3,7 +3,7 @@ var SerialPort = require("browser-serialport").SerialPort;
 var xbee_api = require("xbee-api");
 var main = document.getElementById('main');
 var states = new Object();
-var xbeeport;
+var xbeeport = [];
 
 //ToDo
 //-Make graph stay consistent even with missing data
@@ -13,11 +13,22 @@ var xbeeport;
 
 
 Toast.defaults.displayDuration=3000;
-Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
+//Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
 
+var onGetDevices = function(ports) {
+  for (var i=0; i<ports.length; i++) {
+    console.log(ports[i]);
+    if(ports[i].vendorId == 3368){
+        connect(ports[i].path, "FRDM Board");
+    } else if(ports[i].vendorId == 0000){
+        connect(ports[i].path, "Xbee");
+    }
+  }
+}
 
 //Get current serial ports
 hideObject('turn-all', 1);
+//chrome.serial.getDevices(onGetDevices);
 getCurrentSerialConnections();
 
 //Parse/Send Xbee packets
@@ -55,41 +66,67 @@ xbeeAPI.on("frame_object", function(frame) {
     }
 });
 
+
 function getCurrentSerialConnections(){
-  serialPort.list(function (err, ports) {
-    ports.forEach(function(port) {
-        console.info(port);
-      if(port.vendorId === '0x403'){
-        Toast.info("Found Xbee Serial Port");
-        console.log("Found Xbee");
-        savedstates = new Object();
-        hideObject('turn-all', 0);
-        hideObject('loader', 1);
-        xbeeport = new SerialPort(port.comName/*"/dev/tty.usbserial-DN01ITGO"*/, {baudRate: 230400}, function(err){
-            if(err){
-                return console.log('Error: ', err.message);
+    serialPort.list(function (err, ports) {
+        console.log("Serial Port List:");
+        ports.forEach(function(port) {
+            console.info(port.comName);
+            if(port.vendorId === '0x403'){
+                connect(port.comName, "Xbee");
+            }if(port.vendorId === '0xd28'){
+                connect(port.comName, "FRDM Board");
             }
-            xbeeport.on("open", function(){
-                //xbeeport.write(sendPacket("TURN ON"));
-                xbeeport.on('data', function(data){
+        });
+    });
+}
+
+function connect(portName, name){
+    if(/*portName.indexOf('/cu') == -*/1){
+        var sp = new SerialPort(portName, {baudrate: 230400}, true);
+
+        sp.on("open", function(){
+            console.log("Connected to " + name);
+            Toast.info('Connected to Serial Port');
+            hideObject('turn-all', 1);
+            hideObject('loader', 0);
+
+            sp.write("TURN ON", function(err, results) {
+                console.log('FIRST WRITE: ' + err + " " + JSON.stringify(results));
+            });
+
+            sp.on("error", function(er){
+                console.log("Serial Port Error: " + JSON.stringify(er));
+                Toast.error("Serial Port Error");
+            });
+
+            sp.on("data", function(data){
+                console.log(" " + data);
+                if(name = 'Xbee'){
                     xbeeAPI.parseRaw(data);
-                });
+                }
             });
         });
-      }if(port.vendorId === '0xd28'){
-        console.log("Found FRDM");
-        Toast.info('Found FRDM Serial Port');
-        hideObject('turn-all', 1);
-        hideObject('loader', 0);
-      }
-    });
-    if(!(xbeeport)){
-        Toast.info('No Xbee Unit Found');
-        hideObject('turn-all', 0);
-        hideObject('loader', 1);
+
+        xbeeport.push(sp);
     }
-  });
 }
+
+// var onConnect = function(connectionInfo){
+//     console.log(connectionInfo);
+// }
+
+// function connect(portName, name){
+//     //if(portName.indexOf('/cu') == -1){
+//         chrome.serial.connect(portName, {bitrate: 230400}, onConnect);
+//     //}
+// }
+
+// var onCallback = function(data){//needs to be info.data
+//     //xbeeAPI.parseRaw(data);
+//     console.log("D: " + JSON.stringify(data));
+// }
+// chrome.serial.onReceive.addListener(onCallback);
 
 
 function sendPacket(dataToSend){
