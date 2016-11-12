@@ -72,6 +72,16 @@ aside section {
   vertical-align: middle;
   font-size: 28px;
 }
+aside p {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-left: 5px;
+}
+
+aside p:hover {
+  color: #3498db;
+}
 @font-face {
   font-family: 'quicksand';
   src: url("../fonts/quicksand/Quicksand-Regular.otf");

@@ -1780,33 +1780,22 @@ var xbeeport = [];
 //ToDo
 //-Make graph stay consistent even with missing data
 //-Seemless connection to usb port even on close reopen
-//-Display toast information after manual click on search 1.)either ftdi is found but no data (no connected boxes) 2.) no ftdi driver
-//-Update time and temp
+
+document.getElementById("close-ports").onclick = function(){ return reply_click("close-ports")};
+document.getElementById("turn-all").onclick = function(){ return reply_click("turn-all")};
 
 
 Toast.defaults.displayDuration=3000;
 //Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
 
-// var onGetDevices = function(ports) {
-//   for (var i=0; i<ports.length; i++) {
-//     console.log(ports[i]);
-//     if(ports[i].vendorId == 3368){
-//         connect(ports[i].path, "FRDM Board");
-//     } else if(ports[i].vendorId == 0000){
-//         connect(ports[i].path, "Xbee");
-//     }
-//   }
-// }
-
-//Get current serial ports
 hideObject('turn-all', 1);
-//chrome.serial.getDevices(onGetDevices);
 getCurrentSerialConnections();
 
 //Parse/Send Xbee packets
 var xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2});
 
-
+var firstTime = 0;
+var lastValue = 0;
 //Recieving Data over RF link
 xbeeAPI.on("frame_object", function(frame) {
     var data = frame.data + '';
@@ -1819,14 +1808,24 @@ xbeeAPI.on("frame_object", function(frame) {
       if(dataArray[1] === "data"){
         dataArray[3] = dataArray[3].replace(/[^0-9.,]/g, "");
         if(dataArray[2] === '0'){
+            if(firstTime){
+                var list = states[dataArray[0]].data.split(",");
+                changeData(dataArray[0], list);
+            }
+            lastValue = 0;
+            firstTime = 1;
           states[dataArray[0]].data = " ";
           states[dataArray[0]].data += dataArray[3];
-        } else if(dataArray[2] === '30'){
-          states[dataArray[0]].data += "," + dataArray[3];
-          var list = states[dataArray[0]].data.split(",");
-          changeData(dataArray[0], list);
         } else {
-          states[dataArray[0]].data += "," + dataArray[3];  
+            if(dataArray[2] - lastValue != 1){
+                var missed = dataArray[2] - lastValue;
+                for(var i = 0; i < missed; i++){
+                    states[dataArray[0]].data += "0,0,0,0,0,0,0";
+                }
+                console.log("Missed Data Packet");
+            }
+            states[dataArray[0]].data += "," + dataArray[3];  
+            lastValue = dataArray[2];
         }   
       } else if(dataArray[1] === 'temp' ){
         changeTemp({name: dataArray[0], temp: dataArray[2]});
@@ -1837,7 +1836,6 @@ xbeeAPI.on("frame_object", function(frame) {
       }
     }
 });
-
 
 function getCurrentSerialConnections(){
     serialPort.list(function (err, ports) {
@@ -1850,9 +1848,12 @@ function getCurrentSerialConnections(){
                 connect(port.comName, "FRDM Board");
             }
         });
+        setTimeout(function(){        
+            hideObject('turn-all', 0);
+            hideObject('loader', 1);
+        },2000);
     });
 }
-
 
 function connect(portName, name){
     if(portName.indexOf('/cu') == -1){
@@ -1861,8 +1862,6 @@ function connect(portName, name){
         sp.on("open", function(){
             console.log("Connected to " + name);
             Toast.info('Connected to Serial Port');
-            hideObject('turn-all', 1);
-            hideObject('loader', 0);
 
             sp.write("TURN ON", function(err, results) {
                 console.log('FIRST WRITE: ' + err + " " + JSON.stringify(results));
@@ -1874,7 +1873,6 @@ function connect(portName, name){
             });
 
             sp.on('data', function(data){
-                console.log(" " + data);
                 if(name = 'Xbee'){
                     xbeeAPI.parseRaw(data);
                 }
@@ -1884,23 +1882,6 @@ function connect(portName, name){
         xbeeport.push(sp);
     }
 }
-
-// var onConnect = function(connectionInfo){
-//     console.log(connectionInfo);
-// }
-
-// function connect(portName, name){
-//     //if(portName.indexOf('/cu') == -1){
-//         chrome.serial.connect(portName, {bitrate: 230400}, onConnect);
-//     //}
-// }
-
-// var onCallback = function(data){//needs to be info.data
-//     //xbeeAPI.parseRaw(data);
-//     console.log("D: " + JSON.stringify(data));
-// }
-// chrome.serial.onReceive.addListener(onCallback);
-
 
 function sendPacket(dataToSend){
     var frame_obj = {
@@ -1919,11 +1900,19 @@ function sendPacket(dataToSend){
 }    
 
 function reply_click(id){
+    console.log("Click " + id);
     if(id === 'turn-all'){
         console.log("Here");
         hideObject('turn-all', 1);
         hideObject('loader', 0);
         getCurrentSerialConnections();
+    } if(id === 'close-ports'){
+        if(xbeeport){
+            for(var i = 0; i < xbeeport.length; i++){
+                console.info(xbeeport);
+                xbeeport[i].close(function(){console.log("Closed Port"); Toast.info('Closed Serial Ports');});
+            }
+        }
     }
 
     var clickFunction = id.split('@', 2);//Array [0] Name [1] ClickType
@@ -1933,13 +1922,13 @@ function reply_click(id){
         console.log("Absorb Left");
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
         if(currentvalue > .2){
-            document.getElementById(unit + '@absorbance').innerText = (currentvalue - .1).toFixed(2);
+            document.getElementById(unit + '@absorbance').innerText = (currentvalue - .1).toFixed(3);
             sendPacket(unit + "@absorbance@" + currentvalue);
         }
     } else if(clickFunction[1] === 'absorbright'){
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
         if(currentvalue < 1000){
-            document.getElementById(unit + '@absorbance').innerText = (currentvalue + .1).toFixed(2);
+            document.getElementById(unit + '@absorbance').innerText = (currentvalue + .1).toFixed(3);
             sendPacket(unit + "@absorbance@" + currentvalue);
         }
     } else if(clickFunction[1] === 'power'){
@@ -1954,10 +1943,14 @@ function reply_click(id){
 function createStateAndComponent(data){
     var name = data.name;
     states[name] = {name : data.name, temp: 72, integ: 1, state: "OFF"};
-    htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>INTEG:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> <article> <p>TEST:</p> <textarea id="'+name+'@filename">101716_03:44:20_01.csv</textarea> </article> </section> </div>';
+    htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>INTEGRATION TIME:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> </section> </div>';
     main.innerHTML += htmlObject;
     changeState(name, "OFF");
     createChart(name);
+    //Create Button Handlers
+    document.getElementById(data.name + "@absorbleft").onclick = function(){ return reply_click(data.name + "@absorbleft")};;
+    document.getElementById(data.name + "@absorbright").onclick = function(){ return reply_click(data.name + "@absorbright")};;
+    document.getElementById(data.name + "@power").onclick = function(){ return reply_click(data.name + "@power")};;
 }
 
 function changeState(name, newState){
@@ -1974,7 +1967,12 @@ function changeState(name, newState){
 
 function changeTemp(info){
     var htmlTemp = document.getElementById(info.name + '@temp');
-    htmlTemp.innerHTML = parserFloat(info.temp) * (9.0/5.0) + 32;
+    htmlTemp.innerText = parserFloat(info.temp) * (9.0/5.0) + 32;
+}
+
+function changeInteg(info){
+    var htmlInteg = document.getElementById(info.name + '@integ');
+    htmlInteg.innerText = parseFloat(info.integ).toFixed(3);
 }
 
 function hideObject(toHide, bool) {
