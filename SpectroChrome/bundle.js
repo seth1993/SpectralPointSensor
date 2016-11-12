@@ -1907,12 +1907,11 @@ function reply_click(id){
         hideObject('loader', 0);
         getCurrentSerialConnections();
     } if(id === 'close-ports'){
-        if(xbeeport){
-            for(var i = 0; i < xbeeport.length; i++){
-                console.info(xbeeport);
-                xbeeport[i].close(function(){console.log("Closed Port"); Toast.info('Closed Serial Ports');});
+        chrome.serial.getConnections(function(data){
+            for(var i = 0; i < data.length; i++){
+                chrome.serial.disconnect(data[i].connectionId, function(){console.log("Closed Serial Port"); Toast.info("Closed Serial Port");});
             }
-        }
+        });
     }
 
     var clickFunction = id.split('@', 2);//Array [0] Name [1] ClickType
