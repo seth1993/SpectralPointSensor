@@ -5,13 +5,11 @@ var main = document.getElementById('main');
 var states = new Object();
 var xbeeport = [];
 
-//ToDo
-//-Make graph stay consistent even with missing data
-//-Seemless connection to usb port even on close reopen
-
 document.getElementById("close-ports").onclick = function(){ return reply_click("close-ports")};
 document.getElementById("turn-all").onclick = function(){ return reply_click("turn-all")};
 
+//Todo
+//Perfect changing values on button click and sending data
 
 Toast.defaults.displayDuration=3000;
 //Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
@@ -29,10 +27,14 @@ xbeeAPI.on("frame_object", function(frame) {
     var data = frame.data + '';
     var dataArray = data.split('@');
     console.log(JSON.stringify(dataArray));
+
+    //We can tell from first part of data packet if component exists
     if(!(states[dataArray[0]])){
         createStateAndComponent({name: dataArray[0], state: dataArray[2]});
     }
-    if(dataArray.length > 3){
+
+    if(dataArray.length > 3){//Check if complete packet
+      //(Either Data/Temp/Integ/State packet type)
       if(dataArray[1] === "data"){
         dataArray[3] = dataArray[3].replace(/[^0-9.,]/g, "");
         if(dataArray[2] === '0'){
@@ -42,10 +44,10 @@ xbeeAPI.on("frame_object", function(frame) {
             }
             lastValue = 0;
             firstTime = 1;
-          states[dataArray[0]].data = " ";
-          states[dataArray[0]].data += dataArray[3];
+            states[dataArray[0]].data = " ";
+            states[dataArray[0]].data += dataArray[3];
         } else {
-            if(dataArray[2] - lastValue != 1){
+            if(dataArray[2] - lastValue != 1){//Missing Packets?
                 var missed = dataArray[2] - lastValue;
                 for(var i = 0; i < missed; i++){
                     states[dataArray[0]].data += "0,0,0,0,0,0,0";
@@ -92,7 +94,7 @@ function connect(portName, name){
             Toast.info('Connected to Serial Port');
 
             sp.write("TURN ON", function(err, results) {
-                console.log('FIRST WRITE: ' + err + " " + JSON.stringify(results));
+                //console.log('FIRST WRITE: ' + err + " " + JSON.stringify(results));
             });
 
             sp.on("error", function(er){
@@ -125,11 +127,13 @@ function sendPacket(dataToSend){
         options: 0x00, // optional, 0x00 is default 
         data: dataToSend // Can either be string or byte array. 
     };
+    for(var i = 0; i < xbeeport.length; i++){
+        xbeeport[i].write(xbeeAPI.buildFrame(frame_obj));
+    }
 }    
 
 function reply_click(id){
     if(id === 'turn-all'){
-        console.log("Here");
         hideObject('turn-all', 1);
         hideObject('loader', 0);
         getCurrentSerialConnections();
@@ -139,22 +143,23 @@ function reply_click(id){
                 chrome.serial.disconnect(data[i].connectionId, function(){console.log("Closed Serial Port"); Toast.info("Closed Serial Port");});
             }
         });
+        xbeeport = [];//Empty local handler list
     }
 
-    var clickFunction = id.split('@', 2);//Array [0] Name [1] ClickType
+    var clickFunction = id.split('@', 2);//Array: [0] Name [1] ClickType
     var unit = clickFunction[0];
     
     if(clickFunction[1] === 'absorbleft'){
         console.log("Absorb Left");
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
-        if(currentvalue > .2){
-            document.getElementById(unit + '@absorbance').innerText = (currentvalue - .1).toFixed(3);
+        if(currentvalue > .004){
+            document.getElementById(unit + '@absorbance').innerText = (currentvalue - .005).toFixed(3);
             sendPacket(unit + "@absorbance@" + currentvalue);
         }
     } else if(clickFunction[1] === 'absorbright'){
         var currentvalue = parseFloat(document.getElementById(unit+'@absorbance').innerText);
         if(currentvalue < 1000){
-            document.getElementById(unit + '@absorbance').innerText = (currentvalue + .1).toFixed(3);
+            document.getElementById(unit + '@absorbance').innerText = (currentvalue + .005).toFixed(3);
             sendPacket(unit + "@absorbance@" + currentvalue);
         }
     } else if(clickFunction[1] === 'power'){
@@ -168,7 +173,7 @@ function reply_click(id){
 
 function createStateAndComponent(data){
     var name = data.name;
-    states[name] = {name : data.name, temp: 72, integ: 1, state: "OFF"};
+    states[name] = {name : data.name, temp: 0, integ: 1, state: "OFF"};
     htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>INTEGRATION TIME:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> </section> </div>';
     main.innerHTML += htmlObject;
     changeState(name, "OFF");
