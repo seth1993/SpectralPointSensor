@@ -1923,6 +1923,7 @@ function reply_click(id){
             }
         });
         xbeeport = [];//Empty local handler list
+        main.innerHTML = "";
     }
 
     var clickFunction = id.split('@', 2);//Array: [0] Name [1] ClickType
