@@ -50,7 +50,7 @@ xbeeAPI.on("frame_object", function(frame) {
             if(dataArray[2] - lastValue != 1){//Missing Packets?
                 var missed = dataArray[2] - lastValue;
                 for(var i = 0; i < missed; i++){
-                    states[dataArray[0]].data += "0,0,0,0,0,0,0";
+                    states[dataArray[0]].data += ",0,0,0,0,0,0,0";
                 }
                 console.log("Missed Data Packet");
             }
