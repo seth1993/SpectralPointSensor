@@ -4,9 +4,11 @@ var xbee_api = require("xbee-api");
 var main = document.getElementById('main');
 var states = new Object();
 var xbeeport = [];
+var values = "";
 
 document.getElementById("close-ports").onclick = function(){ return reply_click("close-ports")};
 document.getElementById("turn-all").onclick = function(){ return reply_click("turn-all")};
+document.getElementById("wave").onclick= function(){return sendPacket("undefined@temp@10")}
 
 //Todo
 //Perfect changing values on button click and sending data
@@ -20,8 +22,6 @@ getCurrentSerialConnections();
 //Parse/Send Xbee packets
 var xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2});
 
-var firstTime = 0;
-var lastValue = 0;
 //Recieving Data over RF link
 xbeeAPI.on("frame_object", function(frame) {
     var data = frame.data + '';
@@ -29,8 +29,10 @@ xbeeAPI.on("frame_object", function(frame) {
     console.log(JSON.stringify(dataArray));
 
     //We can tell from first part of data packet if component exists
-    if(!(states[dataArray[0]])){
+    if(!(states[dataArray[0]]) && dataArray[0] != 'undefined'){
         createStateAndComponent({name: dataArray[0], state: dataArray[2]});
+        states[dataArray[0]].firstTime = 0;
+        states[dataArray[0]].lastValue = 0;
     }
 
     if(dataArray.length > 3){//Check if complete packet
@@ -38,33 +40,52 @@ xbeeAPI.on("frame_object", function(frame) {
       if(dataArray[1] === "data"){
         dataArray[3] = dataArray[3].replace(/[^0-9.,]/g, "");
         if(dataArray[2] === '0'){
-            if(firstTime){
+            if(states[dataArray[0]].firstTime){
                 var list = states[dataArray[0]].data.split(",");
                 changeData(dataArray[0], list);
+            } else if(states[dataArray[0]].lastValue != 30){//Missed Packets
+                var missed = 31 - states[dataArray[0]].lastValue;
+                for(var i = 1; i < missed; i++){
+                    states[dataArray[0]].data += ",0,0,0,0,0,0,0";
+                    values += "," + i;
+                }
+                console.log("Missed Data Packet");
             }
-            lastValue = 0;
-            firstTime = 1;
+            states[dataArray[0]].lastValue = 0;
+            states[dataArray[0]].firstTime = 1;
             states[dataArray[0]].data = " ";
             states[dataArray[0]].data += dataArray[3];
+            console.log("Packet Order: " + values);
+            values = "0";
         } else {
-            if(dataArray[2] - lastValue != 1){//Missing Packets?
-                var missed = dataArray[2] - lastValue;
-                for(var i = 0; i < missed; i++){
+            if(dataArray[2] - states[dataArray[0]].lastValue != 1){//Missed Packets
+                var missed = dataArray[2] - states[dataArray[0]].lastValue;
+
+                if((dataArray[2] - states[dataArray[0]].lastValue) < 0){//Missed more than 30 packets
+                    missed  = dataArray[2] + 1;
+                    states[dataArray[0]].data = "";//Start Over
+                }
+
+                for(var i = 1; i < missed; i++){
                     states[dataArray[0]].data += ",0,0,0,0,0,0,0";
+                    values += "," + i;
                 }
                 console.log("Missed Data Packet");
             }
             states[dataArray[0]].data += "," + dataArray[3];  
-            lastValue = dataArray[2];
+            states[dataArray[0]].lastValue = dataArray[2];
+            values += "," + states[dataArray[0]].lastValue;
         }   
-      } else if(dataArray[1] === 'temp' ){
+      } 
+    }  else if(dataArray[1] === "temp"){
         changeTemp({name: dataArray[0], temp: dataArray[2]});
       } else if(dataArray[1] === 'integ'){ 
         changeInteg({name: dataArray[0], integ: dataArray[2]});
       } else if(dataArray[1] === 'state'){
         changeState({name: dataArray[0], state: dataArray[2]});
+      } else if(dataArray[1] === 'time'){
+        changeTime({name: dataArray[0], time: dataArray[2]});
       }
-    }
 });
 
 function getCurrentSerialConnections(){
@@ -148,6 +169,7 @@ function reply_click(id){
     }
 
     var clickFunction = id.split('@', 2);//Array: [0] Name [1] ClickType
+    console.log(clickFunction);
     var unit = clickFunction[0];
     
     if(clickFunction[1] === 'absorbleft'){
@@ -199,12 +221,17 @@ function changeState(name, newState){
 
 function changeTemp(info){
     var htmlTemp = document.getElementById(info.name + '@temp');
-    htmlTemp.innerText = parserFloat(info.temp) * (9.0/5.0) + 32;
+    htmlTemp.innerText = (parseFloat(info.temp) * (9.0/5.0) + 32).toFixed(1);
 }
 
 function changeInteg(info){
     var htmlInteg = document.getElementById(info.name + '@integ');
     htmlInteg.innerText = parseFloat(info.integ).toFixed(3);
+}
+
+function changeTime(info){
+    var htmlTime = document.getElementById(info.name + '@time');
+    htmlTime.innerText = info.time + "";
 }
 
 function hideObject(toHide, bool) {
