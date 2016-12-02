@@ -8,10 +8,7 @@ var values = "";
 
 document.getElementById("close-ports").onclick = function(){ return reply_click("close-ports")};
 document.getElementById("turn-all").onclick = function(){ return reply_click("turn-all")};
-document.getElementById("wave").onclick= function(){return sendPacket("undefined@temp@10")}
-
-//Todo
-//Perfect changing values on button click and sending data
+document.getElementById("wave").onclick= function(){return sendPacket("crazy@temp@10.1")};
 
 Toast.defaults.displayDuration=3000;
 //Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
@@ -28,36 +25,35 @@ xbeeAPI.on("frame_object", function(frame) {
     var dataArray = data.split('@');
     console.log(JSON.stringify(dataArray));
 
-    //We can tell from first part of data packet if component exists
-    if(!(states[dataArray[0]]) && dataArray[0] != 'undefined'){
+    //If Box is not recognized, create it
+    if(!(states[dataArray[0]])){
         createStateAndComponent({name: dataArray[0], state: dataArray[2]});
         states[dataArray[0]].firstTime = 0;
-        states[dataArray[0]].lastValue = 0;
+        states[dataArray[0]].lastValue = 30;
     }
 
-    if(dataArray.length > 3){//Check if complete packet
-      //(Either Data/Temp/Integ/State packet type)
-      if(dataArray[1] === "data"){
+    //(Either Data/Temp/Integ/State packet type)
+    if(dataArray.length > 3 && dataArray[1 === "data"]){//Check if data packet
         dataArray[3] = dataArray[3].replace(/[^0-9.,]/g, "");
-        if(dataArray[2] === '0'){
-            if(states[dataArray[0]].firstTime){
-                var list = states[dataArray[0]].data.split(",");
-                changeData(dataArray[0], list);
-            } else if(states[dataArray[0]].lastValue != 30){//Missed Packets
+        if(dataArray[2] === '0'){//----------------------------------------------Data Packet 0
+            if(states[dataArray[0]].lastValue != 30){//Missed Packets
                 var missed = 31 - states[dataArray[0]].lastValue;
                 for(var i = 1; i < missed; i++){
                     states[dataArray[0]].data += ",0,0,0,0,0,0,0";
                     values += "," + i;
                 }
                 console.log("Missed Data Packet");
+            } else if(states[dataArray[0]].firstTime){//If not first round, display data
+                var list = states[dataArray[0]].data.split(",");
+                changeData(dataArray[0], list);
             }
             states[dataArray[0]].lastValue = 0;
             states[dataArray[0]].firstTime = 1;
             states[dataArray[0]].data = " ";
             states[dataArray[0]].data += dataArray[3];
-            console.log("Packet Order: " + values);
-            values = "0";
-        } else {
+            console.log("Packet Order: " + values);//Temp
+            values = "0";//Temp
+        } else {//--------------------------------------------------------------Data Packet 1-30
             if(dataArray[2] - states[dataArray[0]].lastValue != 1){//Missed Packets
                 var missed = dataArray[2] - states[dataArray[0]].lastValue;
 
@@ -76,16 +72,15 @@ xbeeAPI.on("frame_object", function(frame) {
             states[dataArray[0]].lastValue = dataArray[2];
             values += "," + states[dataArray[0]].lastValue;
         }   
-      } 
-    }  else if(dataArray[1] === "temp"){
+    } else if(dataArray[1] === "temp"){
         changeTemp({name: dataArray[0], temp: dataArray[2]});
-      } else if(dataArray[1] === 'integ'){ 
+    } else if(dataArray[1] === 'integ'){ 
         changeInteg({name: dataArray[0], integ: dataArray[2]});
-      } else if(dataArray[1] === 'state'){
+    } else if(dataArray[1] === 'state'){
         changeState({name: dataArray[0], state: dataArray[2]});
-      } else if(dataArray[1] === 'time'){
+    } else if(dataArray[1] === 'time'){
         changeTime({name: dataArray[0], time: dataArray[2]});
-      }
+    }
 });
 
 function getCurrentSerialConnections(){
@@ -258,7 +253,7 @@ function changeColor(name, type, color){
 var arrayOfRandom = [];
 var arrayOfRandomTwo = [];
 var index = [];
-for(var i = 0; i < 2048; i++){
+for(var i = 0; i < 217; i++){
     index.push(i);
     arrayOfRandom.push(0);
     arrayOfRandomTwo.push(Math.random()+ 4);
