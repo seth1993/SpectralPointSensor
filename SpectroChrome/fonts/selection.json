@@ -20,7 +20,7 @@
       "properties": {
         "ligatures": "connection, wifi",
         "name": "connection",
-        "order": 32,
+        "order": 37,
         "id": 28,
         "prevSize": 32,
         "code": 59675
@@ -28,6 +28,32 @@
       "setIdx": 0,
       "setId": 1,
       "iconIdx": 27
+    },
+    {
+      "icon": {
+        "paths": [
+          "M544 0l-96 96 96 96-224 256h-224l176 176-272 360.616v39.384h39.384l360.616-272 176 176v-224l256-224 96 96 96-96-480-480zM448 544l-64-64 224-224 64 64-224 224z"
+        ],
+        "tags": [
+          "pushpin",
+          "pin"
+        ],
+        "defaultCode": 59718,
+        "grid": 16,
+        "attrs": []
+      },
+      "attrs": [],
+      "properties": {
+        "ligatures": "pushpin, pin",
+        "name": "pushpin",
+        "order": 40,
+        "id": 71,
+        "prevSize": 32,
+        "code": 59718
+      },
+      "setIdx": 0,
+      "setId": 1,
+      "iconIdx": 70
     },
     {
       "icon": {
@@ -49,7 +75,7 @@
       "properties": {
         "ligatures": "search, magnifier",
         "name": "search",
-        "order": 33,
+        "order": 38,
         "id": 135,
         "prevSize": 32,
         "code": 59782
@@ -57,31 +83,6 @@
       "setIdx": 0,
       "setId": 1,
       "iconIdx": 134
-    },
-    {
-      "icon": {
-        "paths": [
-          "M640 146.588v135.958c36.206 15.804 69.5 38.408 98.274 67.18 60.442 60.44 93.726 140.8 93.726 226.274s-33.286 165.834-93.726 226.274c-60.44 60.44-140.798 93.726-226.274 93.726s-165.834-33.286-226.274-93.726c-60.44-60.44-93.726-140.8-93.726-226.274s33.286-165.834 93.726-226.274c28.774-28.774 62.068-51.378 98.274-67.182v-135.956c-185.048 55.080-320 226.472-320 429.412 0 247.424 200.578 448 448 448 247.424 0 448-200.576 448-448 0-202.94-134.95-374.332-320-429.412zM448 0h128v512h-128z"
-        ],
-        "tags": [
-          "switch"
-        ],
-        "defaultCode": 59830,
-        "grid": 16,
-        "attrs": []
-      },
-      "attrs": [],
-      "properties": {
-        "ligatures": "switch",
-        "name": "switch",
-        "order": 34,
-        "id": 183,
-        "prevSize": 32,
-        "code": 59830
-      },
-      "setIdx": 0,
-      "setId": 1,
-      "iconIdx": 182
     },
     {
       "icon": {
@@ -100,7 +101,7 @@
       "properties": {
         "ligatures": "eject, player17",
         "name": "eject",
-        "order": 40,
+        "order": 39,
         "id": 294,
         "prevSize": 32,
         "code": 59941
@@ -108,64 +109,6 @@
       "setIdx": 0,
       "setId": 1,
       "iconIdx": 293
-    },
-    {
-      "icon": {
-        "paths": [
-          "M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512 512-229.23 512-512-229.23-512-512-512zM512 928c-229.75 0-416-186.25-416-416s186.25-416 416-416 416 186.25 416 416-186.25 416-416 416z",
-          "M354.744 706.744l90.512 90.512 285.254-285.256-285.256-285.254-90.508 90.508 194.744 194.746z"
-        ],
-        "tags": [
-          "circle-right",
-          "right",
-          "circle-next",
-          "arrow"
-        ],
-        "defaultCode": 59970,
-        "grid": 16,
-        "attrs": []
-      },
-      "attrs": [],
-      "properties": {
-        "ligatures": "circle-right, right5",
-        "name": "circle-right",
-        "order": 35,
-        "id": 323,
-        "prevSize": 32,
-        "code": 59970
-      },
-      "setIdx": 0,
-      "setId": 1,
-      "iconIdx": 322
-    },
-    {
-      "icon": {
-        "paths": [
-          "M512 1024c282.77 0 512-229.23 512-512s-229.23-512-512-512-512 229.23-512 512 229.23 512 512 512zM512 96c229.75 0 416 186.25 416 416s-186.25 416-416 416-416-186.25-416-416 186.25-416 416-416z",
-          "M669.256 317.256l-90.512-90.512-285.254 285.256 285.256 285.254 90.508-90.508-194.744-194.746z"
-        ],
-        "tags": [
-          "circle-left",
-          "left",
-          "circle-previous",
-          "arrow"
-        ],
-        "defaultCode": 59972,
-        "grid": 16,
-        "attrs": []
-      },
-      "attrs": [],
-      "properties": {
-        "ligatures": "circle-left, left5",
-        "name": "circle-left",
-        "order": 36,
-        "id": 325,
-        "prevSize": 32,
-        "code": 59972
-      },
-      "setIdx": 0,
-      "setId": 1,
-      "iconIdx": 324
     }
   ],
   "height": 1024,
@@ -180,14 +123,17 @@
     "fontPref": {
       "prefix": "icon-",
       "metadata": {
-        "fontFamily": "icomoon"
+        "fontFamily": "icomoon",
+        "majorVersion": 1,
+        "minorVersion": 0
       },
       "metrics": {
         "emSize": 1024,
         "baseline": 6.25,
         "whitespace": 50
       },
-      "embed": false
+      "embed": false,
+      "showSelector": true
     },
     "imagePref": {
       "prefix": "icon-",

@@ -1776,19 +1776,17 @@ var xbee_api = require("xbee-api");
 var main = document.getElementById('main');
 var states = new Object();
 var xbeeport = [];
-var values = "";
 
 document.getElementById("close-ports").onclick = function(){ return reply_click("close-ports")};
 document.getElementById("turn-all").onclick = function(){ return reply_click("turn-all")};
-document.getElementById("wave").onclick= function(){return sendPacket("undefined@temp@10")}
-
-//Todo
-//Perfect changing values on button click and sending data
+//document.getElementById("wave").onclick= function(){return sendPacket("crazy@temp@10.1")};
 
 Toast.defaults.displayDuration=3000;
 //Toast.success('Make sure you have an FTDI driver installed on your computer.', "We haven't found anything yet...",{displayDuration: 10000});
 
+//-------------
 hideObject('turn-all', 1);
+//hideObject("loader", 1);
 getCurrentSerialConnections();
 
 //Parse/Send Xbee packets
@@ -1797,68 +1795,69 @@ var xbeeAPI = new xbee_api.XBeeAPI({ api_mode: 2});
 //Recieving Data over RF link
 xbeeAPI.on("frame_object", function(frame) {
     var data = frame.data + '';
-    var dataArray = data.split('@');
-    console.log(JSON.stringify(dataArray));
+    console.log(JSON.stringify(data));
+    one(data);
+});
 
-    //We can tell from first part of data packet if component exists
-    if(!(states[dataArray[0]]) && dataArray[0] != 'undefined'){
+//-------------
+// createStateAndComponent({name: "alpha"});
+
+// var j = 0;
+// setInterval(function(){
+//     console.log(states);
+//     if(j > 1 && j < 10){
+//         for(var i = 0; i < 31;i++){
+//             var a = "alpha@data@" + i + "@8000, 8010, 8020, 8030, 8040,8050, 8060, 8070";
+//             one(a);
+//         }
+//         one("alpha@time@11:31:00");
+//     } else if(j > 10){
+//         for(var i = 0; i < 31;i++){
+//             var a = "alpha@data@" + i + "@48010, 48020, 48020, 48040, 48030,8050, 8060, 8070";
+//             one(a);
+//         }
+//     }
+//     j++;
+// },3000);
+//------------
+
+
+function one(data){
+    var dataArray = data.split('@');
+
+    //If Box is not recognized, create it
+    if(!(states[dataArray[0]])){
         createStateAndComponent({name: dataArray[0], state: dataArray[2]});
-        states[dataArray[0]].firstTime = 0;
-        states[dataArray[0]].lastValue = 0;
     }
 
-    if(dataArray.length > 3){//Check if complete packet
-      //(Either Data/Temp/Integ/State packet type)
-      if(dataArray[1] === "data"){
+    //(Either Data/Temp/Integ/State packet type)
+    if(dataArray.length > 3 && dataArray[1] == "data"){//Check if data packet
         dataArray[3] = dataArray[3].replace(/[^0-9.,]/g, "");
-        if(dataArray[2] === '0'){
-            if(states[dataArray[0]].firstTime){
-                var list = states[dataArray[0]].data.split(",");
-                changeData(dataArray[0], list);
-            } else if(states[dataArray[0]].lastValue != 30){//Missed Packets
-                var missed = 31 - states[dataArray[0]].lastValue;
-                for(var i = 1; i < missed; i++){
-                    states[dataArray[0]].data += ",0,0,0,0,0,0,0";
-                    values += "," + i;
-                }
-                console.log("Missed Data Packet");
+
+        if(dataArray[2] == '30'){
+            states[dataArray[0]].data += dataArray[3]; 
+            var list = (states[dataArray[0]].data).split(",");
+            changeData(dataArray[0], list, 0);
+            if(states[dataArray[0]].saveboolean){
+                changeData(dataArray[0], list, 1);
+                states[dataArray[0]].saveboolean = 0;
             }
-            states[dataArray[0]].lastValue = 0;
-            states[dataArray[0]].firstTime = 1;
-            states[dataArray[0]].data = " ";
-            states[dataArray[0]].data += dataArray[3];
-            console.log("Packet Order: " + values);
-            values = "0";
+            states[dataArray[0]].data = [];
+        } else if(dataArray[2] == '0') {
+            states[dataArray[0]].data = dataArray[3] + ",";  
         } else {
-            if(dataArray[2] - states[dataArray[0]].lastValue != 1){//Missed Packets
-                var missed = dataArray[2] - states[dataArray[0]].lastValue;
-
-                if((dataArray[2] - states[dataArray[0]].lastValue) < 0){//Missed more than 30 packets
-                    missed  = dataArray[2] + 1;
-                    states[dataArray[0]].data = "";//Start Over
-                }
-
-                for(var i = 1; i < missed; i++){
-                    states[dataArray[0]].data += ",0,0,0,0,0,0,0";
-                    values += "," + i;
-                }
-                console.log("Missed Data Packet");
-            }
-            states[dataArray[0]].data += "," + dataArray[3];  
-            states[dataArray[0]].lastValue = dataArray[2];
-            values += "," + states[dataArray[0]].lastValue;
-        }   
-      } 
-    }  else if(dataArray[1] === "temp"){
+            states[dataArray[0]].data += dataArray[3] + ","
+        }  
+    } else if(dataArray[1] === "temp"){
         changeTemp({name: dataArray[0], temp: dataArray[2]});
-      } else if(dataArray[1] === 'integ'){ 
+    } else if(dataArray[1] === 'integ'){ 
         changeInteg({name: dataArray[0], integ: dataArray[2]});
-      } else if(dataArray[1] === 'state'){
+    } else if(dataArray[1] === 'state'){
         changeState({name: dataArray[0], state: dataArray[2]});
-      } else if(dataArray[1] === 'time'){
+    } else if(dataArray[1] === 'time'){
         changeTime({name: dataArray[0], time: dataArray[2]});
-      }
-});
+    }
+}
 
 function getCurrentSerialConnections(){
     serialPort.list(function (err, ports) {
@@ -1937,6 +1936,7 @@ function reply_click(id){
             }
         });
         xbeeport = [];//Empty local handler list
+        states = [];
         main.innerHTML = "";
     }
 
@@ -1963,20 +1963,24 @@ function reply_click(id){
         } else if(states[unit].state === 'ON'){
             sendPacket(unit + "@state@off");
         }
+    } else if(clickFunction[1] === 'set'){
+        states[unit].saveboolean = 1;
     }
 }
 
 function createStateAndComponent(data){
     var name = data.name;
-    states[name] = {name : data.name, temp: 0, integ: 1, state: "OFF"};
-    htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section> <article> <a id="'+name+'1power"> <span id="'+name+'@power" onClick="reply_click(this.id)" class="icon-switch"></span> </a> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p> <p>°</p> </article> <article> <p>INTEGRATION TIME:</p> <span id="'+name+'@absorbleft" onClick="reply_click(this.id)" class="icon-circle-left"></span> <p id="'+name+'@absorbance">01.00</p> <span id="'+name+'@absorbright" onClick="reply_click(this.id)" class="icon-circle-right"></span> <p>SEC</p> </article> </section> </div>';
+    states[name] = {name : data.name, temp: 0, integ: 1, state: "ON"};
+    htmlObject = '<div id="'+ name +'"> <section> <canvas id="'+name+'mychart" width="700" height="150"></canvas> </section> <section><p class="titlegraph">Intensity vs Wavelength (nm)</p><article> <h4 id="'+name+'@name">'+ name.toUpperCase() +'</h4> <p id="'+name+'@time">00:00:00</p> <p id="'+name+'@temp">70</p><p>°</p><p>  |  SET REFERENCE LINE </p><a id="'+name +'set"><span class="icon-pushpin"></span></a></article></section> </div>';
     main.innerHTML += htmlObject;
-    changeState(name, "OFF");
-    createChart(name);
+    //changeState(name, "OFF");
+    //createChart(name);
     //Create Button Handlers
-    document.getElementById(data.name + "@absorbleft").onclick = function(){ return reply_click(data.name + "@absorbleft")};;
-    document.getElementById(data.name + "@absorbright").onclick = function(){ return reply_click(data.name + "@absorbright")};;
-    document.getElementById(data.name + "@power").onclick = function(){ return reply_click(data.name + "@power")};;
+    // document.getElementById(data.name + "@absorbleft").onclick = function(){ return reply_click(data.name + "@absorbleft")};;
+    // document.getElementById(data.name + "@absorbright").onclick = function(){ return reply_click(data.name + "@absorbright")};;
+    // document.getElementById(data.name + "@power").onclick = function(){ return reply_click(data.name + "@power")};;
+    document.getElementById(data.name + "set").onclick = function(){ return reply_click(data.name + "@set")};
+
 }
 
 function changeState(name, newState){
@@ -2011,7 +2015,7 @@ function hideObject(toHide, bool) {
         var hide = document.getElementById(toHide);
         hide.style.height = 0;
         hide.style.visibility = 'hidden';
-        hide.style.padding = 0;
+        //hide.style.padding = 0;
     } else {
         var hide = document.getElementById(toHide);
         hide.style.height = '30px';
@@ -2020,21 +2024,15 @@ function hideObject(toHide, bool) {
     }
 }
 
-function changeColor(name, type, color){
-    if(type === 'power'){
-        document.getElementById(name+'1'+type).className = color;
-    }
-};
+// function changeColor(name, type, color){
+//     if(type === 'power'){
+//         document.getElementById(name+'1'+type).className = color;
+//     }
+// };
 
 //Chart Random Array and Chart Defaults
-var arrayOfRandom = [];
-var arrayOfRandomTwo = [];
-var index = [];
-for(var i = 0; i < 2048; i++){
-    index.push(i);
-    arrayOfRandom.push(0);
-    arrayOfRandomTwo.push(Math.random()+ 4);
-}
+var initialArray = makeArrayZero(217);
+var index = makeArray(217);
 
 var options = {
         scales: {
@@ -2042,6 +2040,12 @@ var options = {
                 display: true,
                 ticks: {
                     autoSkipPadding: 20
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    max: 50000,
+                    min: 6000
                 }
             }]
         },
@@ -2063,16 +2067,18 @@ var startingData = {
     labels: index,
     datasets: [
         {
-            backgroundColor: "rgb(246, 246, 246)",
-            data: arrayOfRandom
-        }/*,
+
+            borderColor: "rgb(52, 152, 219)",
+            borderWidth: 1.4,
+            data: initialArray,
+            fill: false
+        },
         {
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,.1)",
-            pointColor: "rgba(151,187,205,.1)",
-            pointStrokeColor: "#fff",
-            data: arrayOfRandomTwo
-        }*/
+            borderColor: "rgb(153, 153, 153)",
+            borderWidth: 1.4,
+            data: [0],
+            fill: false
+        }
     ]
 };
 
@@ -2088,12 +2094,14 @@ function createChart(name){
     states[name].chart = new Chart(ctx, details);
 }
 
-function changeData(name,data){
+function changeData(name,data,arraynumber){
     if(states[name].chart && data){
-        states[name].chart.data.datasets[0].data = data;
+        console.log(data);
+        states[name].chart.data.datasets[arraynumber].data = data;
         states[name].chart.data.labels = makeArray(data.length);
         states[name].chart.update();
     } else {
+        console.log("Created Chart");
         createChart(name);
     }
 };
@@ -2101,11 +2109,18 @@ function changeData(name,data){
 function makeArray(num){
     var a = [];
     for(var i = 0; i < num; i++){
-        a.push(i);
+        a.push(parseInt(parseFloat(i)/parseFloat(num)*796.0+201));
     }
     return a;
 }
 
+function makeArrayZero(num){
+    var a = [];
+    for(var i = 0; i < num; i++){
+        a.push(0);
+    }
+    return a;
+}
 },{"browser-serialport":1,"xbee-api":7}],9:[function(require,module,exports){
 // http://wiki.commonjs.org/wiki/Unit_Testing/1.0
 //

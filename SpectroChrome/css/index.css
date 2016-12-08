@@ -37,12 +37,11 @@ main div h4 {
   display: inline;
 }
 main div article {
-  display: inline-block;
+  display: block;
   background-color: #4d4d4d;
   margin: 3px;
   padding: 6px;
   border-radius: 2px;
-  vertical-align: center;
 }
 main div textarea {
   display: inline-block;
@@ -143,10 +142,33 @@ aside p:hover {
   100% { transform: rotate(360deg); }
 }
 
+#turn-all {
+  font-size: 18px;
+  padding-top: 6px;
+  padding-right: 6px;
+}
+
 #turn-all:hover {
   color: #3498db;
 }
 
+.icon-pushpin:hover {
+  color: #3498db;
+}
+
 .icon-eject {
-  margin-left: 10px;
+  position: fixed;
+  right: 70px;
+}
+
+.titlegraph {
+  margin: 0;
+  margin-bottom: 5px;
+  display: block;
+  font-size: 16px;
+  color: #737373;
+}
+
+.spectroname {
+  color: #3498db;
 }
